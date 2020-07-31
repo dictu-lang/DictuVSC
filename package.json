@@ -1,0 +1,25 @@
+{
+    "name": "dictuvsc",
+    "displayName": "DictuVSC",
+    "description": "",
+    "version": "0.0.1",
+    "engines": {
+        "vscode": "^1.47.0"
+    },
+    "categories": [
+        "Programming Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "dictu",
+            "aliases": ["Dictu", "dictu"],
+            "extensions": [".du",".dictu"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "dictu",
+            "scopeName": "source.du",
+            "path": "./syntaxes/dictu.tmLanguage.json"
+        }]
+    }
+}

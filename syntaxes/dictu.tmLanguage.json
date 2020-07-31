@@ -1,0 +1,123 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Dictu",
+	"patterns": [
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#names"
+		},
+		{
+			"include": "#arguments"
+		}
+	],
+	"repository": {
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.double-slash.dictu",
+					"match": "(//.*)"
+				},
+				{
+					"name": "comment.block.dictu",
+					"begin": "/\\*",
+					"end": "\\*/"
+				
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.dictu",
+					"match": "\\b(if|else|while|for|return)\\b"
+				},
+				{
+					"name": "constant.language.dictu",
+					"match": "\\b(true|false|nil)\\b"
+				},
+				{
+					"name": "keyword.dictu",
+					"match": "\\b(def|var|class|import|as|and|or|not)\\b"
+				},
+				{
+					"name": "keyword.operator.dictu",
+					"match": "\\b(and|or|not)\\b"
+				},
+				{
+					"name": "storage.modifier.dictu",
+					"match": "\\b(abstract|static)\\b"
+				}
+			]
+		},
+		"strings": {
+			"patterns": [
+				{
+					"name": "string.quoted.double.dictu",
+					"begin": "\"",
+					"end": "\"",
+					"patterns": [
+						{
+							"name": "constant.character.escape.dictu",
+							"match": "\\\\."
+						}
+					]
+				},
+				{
+					"name": "string.quoted.single.dictu",
+					"begin": "'",
+					"end": "'",
+					"patterns": [
+						{
+							"name": "constant.character.escape.dictu",
+							"match": "\\\\."
+						}
+					]
+				}
+			] 
+		},
+		"numbers": {
+			"name": "constant.numeric.dictu",
+			"match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+		},
+		"names": {
+			"patterns": [
+				{
+					"name": "entity.name.function.dictu",
+					"match": "\\b([[:alpha:]][[:alnum:]]*)\\s*\\("
+				},
+				{
+					"name": "entity.name.type.dictu",
+					"match": "\\b([A-Z][[:alnum:]]*)\\b"
+				},
+				{
+					"name": "variable.language.this.dictu",
+					"match": "\\b(this)\\b"
+				},
+				{
+					"name": "variable.dictu",
+					"match": "\\b([[:alpha:]][[:alnum:]]*)\\b"
+				}
+			]
+		},
+		"arguments": {
+			"patterns": [
+				{
+					"name": "variable.parameter.dictu",
+					"match": "(?<=\\()\\s*([[:alpha:]][[:alnum:]]*)(?:\\s*,\\s*([[:alpha:]][[:alnum:]]*))*\\s*(?=\\))"
+				}
+			]
+		}
+	},
+	"scopeName": "source.du"
+}
