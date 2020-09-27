@@ -40,7 +40,7 @@
 			"patterns": [
 				{
 					"name": "keyword.control.dictu",
-					"match": "\\b(if|else|while|for|return|break|continue)\\b"
+					"match": "\\b(if|else|while|for|return|break|continue|with)\\b"
 				},
 				{
 					"name": "constant.language.dictu",
@@ -48,7 +48,7 @@
 				},
 				{
 					"name": "keyword.dictu",
-					"match": "\\b(def|var|const|class|import|as|and|or|not)\\b"
+					"match": "\\b(def|var|const|class|trait|import|as|and|or|not|use)\\b"
 				},
 				{
 					"name": "keyword.operator.dictu",
@@ -97,8 +97,12 @@
 					"match": "\\b([A-Z][[[:alnum:]]_]*)\\b"
 				},
 				{
-					"name": "entity.name.function.dictu",
-					"match": "\\b([[:alpha:]][[[:alnum:]]_]*)\\s*\\("
+					"match": "\\b([[:alpha:]][[[:alnum:]]_]*)\\s*\\(",
+					"captures": {
+						"1": {
+							"name": "entity.name.function.dictu"
+						}
+					}
 				},
 				{
 					"name": "variable.language.this.dictu",
