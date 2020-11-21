@@ -48,7 +48,7 @@
 				},
 				{
 					"name": "keyword.dictu",
-					"match": "\\b(def|var|const|class|trait|import|as|and|or|not|use)\\b"
+					"match": "\\b(def|var|const|class|trait|import|from|as|and|or|not|use)\\b"
 				},
 				{
 					"name": "keyword.operator.dictu",
@@ -107,6 +107,10 @@
 				{
 					"name": "variable.language.this.dictu",
 					"match": "\\b(this)\\b"
+				},
+				{
+					"name": "variable.language.super.dictu",
+					"match": "\\b(super)\\b"
 				},
 				{
 					"name": "variable.dictu",
