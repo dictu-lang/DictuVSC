@@ -47,6 +47,8 @@ const resolveExplainations: {[key: string]: {documentation: string; detail: stri
 const builtInModules: {name: string; methods: string[]}[] = dictuLanguage.modules;
 const snippets: {[key: string]: {content: string, detail: string}} = dictuLanguage.snippets;
 
+let knownSymbols: CompletionItem[] = [];
+
 connection.onInitialize((params: InitializeParams) => {
 	let capabilities = params.capabilities;
 
@@ -147,9 +149,31 @@ documents.onDidClose(e => {
 
 // The content of a text document has changed. This event is emitted
 // when the text document first opened or when its content has changed.
-// documents.onDidChangeContent(change => {
-// 	validateTextDocument(change.document);
-// });
+documents.onDidChangeContent(change => {
+	const content = change.document.getText();
+	const matches = content.matchAll(/(?:var|def|class|trait|import)\s+(?<name>[a-zA-Z0-9_]+)\s*(?:;|{)/g);
+	let symbols: CompletionItem[] = [];
+	let foundSymbols: Map<string, boolean> = new Map();
+
+	for (let match of matches) {
+		let symbol = match.groups;
+
+		if (symbol && !foundSymbols.has(symbol.name)) {
+			symbols.push({
+				label: symbol.name,
+				kind: symbol.name.charAt(0) == symbol.name.charAt(0).toLowerCase() ? 
+					CompletionItemKind.Variable : CompletionItemKind.Class,
+				data: `known-${symbol.name}`
+			});
+
+			foundSymbols.set(symbol.name, true);
+		}
+	}
+
+	knownSymbols = symbols;
+
+	// validateTextDocument(change.document);
+});
 
 // async function validateTextDocument(textDocument: TextDocument): Promise<void> {
 // 	// In this simple example we get the settings for every validate run.
@@ -300,7 +324,6 @@ connection.onCompletion(
 						kind: MarkupKind.Markdown
 					}
 
-
 					defaultCompletion.push({
 						label: snippet,
 						kind: CompletionItemKind.Snippet,
@@ -310,6 +333,10 @@ connection.onCompletion(
 						detail: snippets[snippet].detail,
 						documentation: content
 					});
+				}
+
+				if (knownSymbols !== []) {
+					defaultCompletion.push(...knownSymbols);
 				}
 
 				return defaultCompletion;
