@@ -1,0 +1,135 @@
+{
+	"modules": [
+		{
+			"name": "System",
+			"methods": [
+				"mkdir", "access", "rmdir", "remove", 
+				"getpid", "getppid", "getuid", "geteuid",
+				"getgid", "getegid", "getCWD", "setCWD",
+				"sleep", "clock", "time", "collect", "exit"
+			]
+		},
+		{
+			"name": "Datetime",
+			"methods": [
+				"now", "nowUTC", "strftime", "strptime"
+			]
+		},
+		{
+			"name": "Math",
+			"methods": [
+				"min", "max", "average", "sum",
+				"floor", "round", "ceil", "abs",
+				"sqrt", "sin", "cos", "tan"
+			]
+		},
+		{
+			"name": "Path",
+			"methods": [
+				"basename", "dirname", "extname",
+				"isAbsolute", "realpath", "exists",
+				"isdir", "listdir"
+			]
+		},
+		{
+			"name": "Env",
+			"methods": [
+				"get", "set"
+			]
+		},
+		{
+			"name": "JSON",
+			"methods": [
+				"parse", "stringify"
+			]
+		},
+		{
+			"name": "HTTP",
+			"methods": [
+				"get", "post"
+			]
+		},
+		{
+			"name": "Socket",
+			"methods": [
+				"create", "bind", "connect",
+				"listen", "accept", "write",
+				"recv", "close", "setsocketopt"
+			]
+		},
+		{
+			"name": "Random",
+			"methods": [
+				"random", "range", "select"
+			]
+		},
+		{
+			"name": "Base64",
+			"methods": [
+				"encode", "decode"
+			]
+		},
+		{
+			"name": "Hashlib",
+			"methods": [
+				"sha256", "hmac", "bcrypt", "bcryptVerify", "verify"
+			]
+		},
+		{
+			"name": "Process",
+			"methods": [
+				"exec", "run"
+			]
+		},
+		{
+			"name": "Sqlite",
+			"methods": [
+				"connect", "execute", "close"
+			]
+		}
+	],
+	"builtins": [
+		"print", "input", "type", "assert", "isDefined"
+	],
+	"keywords": [
+		"class", "abstract", "trait", "use", "static", "public",
+		"this", "super", "def", "as",
+		"if", "and", "else", "or",
+		"var", "const", "true", "false", "nil",
+		"for", "while", "break",
+		"return", "continue",
+		"with", "import", "from"
+	],
+	"explainations": {
+		"builtins-print": {
+			"detail": "Prints given values to the stdout",
+			"documentation": "print(10, 'test', nil, true); // 10, 'test', nil, true"
+		},
+		"builtins-input": {
+			"detail": "Retrieves input from stdin and returns value as a string",
+			"documentation": "input('Please enter your choice: '); // Optional prompt"
+		}
+	},
+	"snippets": {
+		"for": {
+			"detail": "For loop skeleton",
+			"content": "for (var i = 0; i < $0; i += 1) {\n\t\n}"
+		},
+		"def": {
+			"detail": "Function skeleton",
+			"content": "def $0() {\n\n}"
+		},
+		"def arrow": {
+			"detail": "Arrow function skeleton",
+			"content": "def () => $0"
+		},
+		"class": {
+			"detail": "Class skeleton",
+			"content": "class $0 {\n\tinit() {\n\t\t\n\t}\n}"
+		},
+		"abstract class": {
+			"detail": "Abstract class skeleton",
+			"content": "abstract class $0 {\n\t\n}"
+		}
+	}
+}
