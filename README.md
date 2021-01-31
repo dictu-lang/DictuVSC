@@ -27,7 +27,7 @@ More planned.
 
 ## Contributing
 
-See [contributing](contriubting.md).
+See [contributing](contributing.md).
 
 ## License
 
