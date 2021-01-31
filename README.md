@@ -1,38 +1,30 @@
-# LSP Example
+# Dictu Extension
 
-Heavily documented sample code for https://code.visualstudio.com/api/language-extensions/language-server-extension-guide
+The Dictu language extension for [VSCode.](https://code.visualstudio.com/)
 
 ## Functionality
 
-This Language Server works for plain text file. It has the following language features:
-- Completions
-- Diagnostics regenerated on each file change or configuration change
+- Syntax highlighting
+- Auto completion
 
-It also includes an End-to-End test.
+More planned.
 
-## Structure
+### Syntax highlighting
 
-```
-.
-├── client // Language Client
-│   ├── src
-│   │   ├── test // End to End tests for Language Client / Server
-│   │   └── extension.ts // Language Client entry point
-├── package.json // The extension manifest.
-└── server // Language Server
-    └── src
-        └── server.ts // Language Server entry point
-```
+<p align=center>
+<img src="images/syntax-highlighting.png" width=75%>
+<br/>
+<em>(Syntax highlighting)</em>
+</p>
 
-## Running the Sample
+### Auto Completion
 
-- Run `npm install` in this folder. This installs all necessary npm modules in both the client and server folder
-- Open VS Code on this folder.
-- Press Ctrl+Shift+B to compile the client and server.
-- Switch to the Debug viewlet.
-- Select `Launch Client` from the drop down.
-- Run the launch config.
-- If you want to debug the server as well use the launch configuration `Attach to Server`
-- In the [Extension Development Host] instance of VSCode, open a document in 'plain text' language mode.
-  - Type `j` or `t` to see `Javascript` and `TypeScript` completion.
-  - Enter text content such as `AAA aaa BBB`. The extension will emit diagnostics for all words in all-uppercase.
+<p align=center>
+<img src="images/autocompletion.png" width=75%>
+<br/>
+<em>(Auto Completion)</em>
+</p>
+
+## License
+
+This project is licensed under the MIT license.

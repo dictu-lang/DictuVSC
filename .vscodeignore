@@ -7,6 +7,7 @@
 contributing.md
 .travis.yml
 node_modules
+images
 client/
 !client/syntaxes/**
 !client/language-configuration.json
