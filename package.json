@@ -3,7 +3,7 @@
 	"description": "Dictu language server protocol",
 	"author": "Jason Hall",
 	"license": "MIT",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"icon": "logo.png",
 	"repository": {
 		"type": "git",
@@ -45,17 +45,27 @@
 				}
 			}
 		},
-		"languages": [{
-			"id": "dictu",
-			"aliases": ["Dictu", "dictu"],
-			"extensions": [".du",".dictu"],
-			"configuration": "./client/language-configuration.json"
-		}],
-		"grammars": [{
-			"language": "dictu",
-			"scopeName": "source.du",
-			"path": "./client/syntaxes/dictu.tmLanguage.json"
-		}]
+		"languages": [
+			{
+				"id": "dictu",
+				"aliases": [
+					"Dictu",
+					"dictu"
+				],
+				"extensions": [
+					".du",
+					".dictu"
+				],
+				"configuration": "./client/language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "dictu",
+				"scopeName": "source.du",
+				"path": "./client/syntaxes/dictu.tmLanguage.json"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
