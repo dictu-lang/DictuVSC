@@ -4,6 +4,7 @@
 	"author": "Jason Hall",
 	"license": "MIT",
 	"version": "1.0.0",
+	"icon": "logo.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/dictu-lang/DictuVSC"
