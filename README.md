@@ -1,6 +1,6 @@
 # Dictu Extension
 
-The Dictu language extension for [VSCode.](https://code.visualstudio.com/)
+The [Dictu language](https://dictu-lang.com) extension for [VSCode.](https://code.visualstudio.com/)
 
 ## Functionality
 
@@ -24,6 +24,10 @@ More planned.
 <br/>
 <em>(Auto Completion)</em>
 </p>
+
+## Contributing
+
+See [contributing](contriubting.md).
 
 ## License
 
