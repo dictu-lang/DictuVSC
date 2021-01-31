@@ -1,25 +1,75 @@
 {
-    "name": "dictuvsc",
-    "displayName": "DictuVSC",
-    "description": "",
-    "version": "0.0.1",
-    "engines": {
-        "vscode": "^1.47.0"
-    },
-    "categories": [
-        "Programming Languages"
-    ],
-    "contributes": {
-        "languages": [{
-            "id": "dictu",
-            "aliases": ["Dictu", "dictu"],
-            "extensions": [".du",".dictu"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "dictu",
-            "scopeName": "source.du",
-            "path": "./syntaxes/dictu.tmLanguage.json"
-        }]
-    }
+	"name": "dictuvsc",
+	"description": "Dictu language server protocol",
+	"author": "Jason Hall",
+	"license": "MIT",
+	"version": "1.0.0",
+	"icon": "logo.png",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/dictu-lang/DictuVSC"
+	},
+	"publisher": "Dictu",
+	"categories": [],
+	"keywords": [
+		"multi-root ready"
+	],
+	"engines": {
+		"vscode": "^1.43.0"
+	},
+	"activationEvents": [
+		"onLanguage:dictu"
+	],
+	"main": "./client/out/extension",
+	"contributes": {
+		"configuration": {
+			"type": "object",
+			"title": "Dictu LSP",
+			"properties": {
+				"dictuLanguageServer.maxNumberOfProblems": {
+					"scope": "resource",
+					"type": "number",
+					"default": 100,
+					"description": "Controls the maximum number of problems produced by the server."
+				},
+				"dictuLanguageServer.trace.server": {
+					"scope": "window",
+					"type": "string",
+					"enum": [
+						"off",
+						"messages",
+						"verbose"
+					],
+					"default": "off",
+					"description": "Traces the communication between VS Code and the language server."
+				}
+			}
+		},
+		"languages": [{
+			"id": "dictu",
+			"aliases": ["Dictu", "dictu"],
+			"extensions": [".du",".dictu"],
+			"configuration": "./client/language-configuration.json"
+		}],
+		"grammars": [{
+			"language": "dictu",
+			"scopeName": "source.du",
+			"path": "./client/syntaxes/dictu.tmLanguage.json"
+		}]
+	},
+	"scripts": {
+		"vscode:prepublish": "npm run compile",
+		"compile": "tsc -b",
+		"watch": "tsc -b -w",
+		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+		"test": "sh ./scripts/e2e.sh"
+	},
+	"devDependencies": {
+		"@types/mocha": "^8.0.3",
+		"mocha": "^8.1.1",
+		"@types/node": "^12.12.0",
+		"eslint": "^6.4.0",
+		"@typescript-eslint/parser": "^2.3.0",
+		"typescript": "^4.0.2"
+	}
 }
