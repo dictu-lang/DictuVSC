@@ -154,7 +154,7 @@ documents.onDidClose(e => {
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
 	const content = change.document.getText();
-	const matches = content.matchAll(/(?<type>var|const|def|class|trait|import)\s+(?<name>[a-zA-Z0-9_]+)\s*(?:|{)/g);
+	const matches = content.matchAll(/(?<type>var|const|def|class|trait|import|as)\s+(?<name>[a-zA-Z0-9_]+)\s*(?:|{)/g);
 	let symbols: CompletionItem[] = [];
 	let foundSymbols: Map<string, boolean> = new Map();
 
