@@ -2,6 +2,8 @@
 	"modules": [
 		{
 			"name": "System",
+			"detail": "Module containing different methods that allow system interaction",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "mkdir",
@@ -92,6 +94,8 @@
 		},
 		{
 			"name": "Datetime",
+			"detail": "Module containing different methods that deal with date and time",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "now",
@@ -117,6 +121,8 @@
 		},
 		{
 			"name": "Math",
+			"detail": "Module containing different methods that expose math functions",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "min",
@@ -182,6 +188,8 @@
 		},
 		{
 			"name": "Path",
+			"detail": "Module containing different methods that allow filesystem interaction",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "basename",
@@ -227,6 +235,8 @@
 		},
 		{
 			"name": "Env",
+			"detail": "Module containing different methods that allow environment variable interaction",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "get",
@@ -242,6 +252,8 @@
 		},
 		{
 			"name": "JSON",
+			"detail": "Module containing different methods that deal with JSON",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "parse",
@@ -257,6 +269,8 @@
 		},
 		{
 			"name": "HTTP",
+			"detail": "Module containing different methods that deal with HTTP",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "get",
@@ -272,6 +286,8 @@
 		},
 		{
 			"name": "Socket",
+			"detail": "Module containing different methods that deal with sockets",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "create",
@@ -282,6 +298,8 @@
 		},
 		{
 			"name": "Random",
+			"detail": "Module containing different methods that deal with random numbers and selections. Note: NOT cryptographically secure.",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "random",
@@ -302,6 +320,8 @@
 		},
 		{
 			"name": "Base64",
+			"detail": "Module containing different methods that deal with base64 encoding and decoding.",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "encode",
@@ -317,6 +337,8 @@
 		},
 		{
 			"name": "Hashlib",
+			"detail": "Module containing different methods that deal with different hashing algorithms.",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "sha256",
@@ -347,6 +369,8 @@
 		},
 		{
 			"name": "Process",
+			"detail": "Module containing different methods that deal with processes.",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "exec",
@@ -362,6 +386,8 @@
 		},
 		{
 			"name": "Sqlite",
+			"detail": "Module containing different methods that deal with SQLite.",
+			"documentation": "",
 			"methods": [
 				{
 					"name": "connect",

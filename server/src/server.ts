@@ -44,6 +44,13 @@ interface BuiltIns {
 	documentation: string
 }
 
+interface BuiltInModules {
+	name: string,
+	detail: string,
+	documentation: string,
+	methods: BuiltinModuleMethods[]
+}
+
 interface BuiltinModuleMethods {
 	name: string,
 	detail: string,
@@ -52,7 +59,7 @@ interface BuiltinModuleMethods {
 
 const keywords: string[] = dictuLanguage.keywords;
 const builtIns: BuiltIns[] = dictuLanguage.builtins;
-const builtInModules: {name: string; methods: BuiltinModuleMethods[]}[] = dictuLanguage.modules;
+const builtInModules: BuiltInModules[] = dictuLanguage.modules;
 const snippets: {[key: string]: {content: string, detail: string}} = dictuLanguage.snippets;
 
 let knownSymbols: CompletionItem[] = [];
@@ -268,13 +275,15 @@ connection.onCompletion(
 
 			default: {
 				if (content.slice(position - 7, position - 1) === "import") {
-					let modules = [];
+					let modules: CompletionItem[] = [];
 
 					for (let module of builtInModules) {
 						modules.push({
 							label: module.name,
 							kind: CompletionItemKind.Module,
-							data: module
+							data: module,
+							detail: module.detail,
+							documentation: dictuDocumentationMarkdown(module.documentation)
 						});
 					}
 
