@@ -12,7 +12,7 @@
 └── server // Language Server
     └── src
 	    ├── language.json // Configuration file for language autocompletion
-        └── server.ts // Language Server entry point
+      └── server.ts // Language Server entry point
 ```
 
 ## Functionality
@@ -36,4 +36,4 @@ Auto completion is handled via LSP written in TypeScript. A lot of the rules are
 - Run the launch config.
 - If you want to debug the server as well use the launch configuration `Attach to Server`
 - In the [Extension Development Host] instance of VSCode, open a document in 'dictu' language mode.
-  - Type `print` and see autocompletion along with syntax highlighting.
+- Type `print` and see autocompletion along with syntax highlighting.

@@ -6,6 +6,7 @@ The [Dictu language](https://dictu-lang.com) extension for [VSCode.](https://cod
 
 - Syntax highlighting
 - Auto completion
+- Documentation
 
 More planned.
 

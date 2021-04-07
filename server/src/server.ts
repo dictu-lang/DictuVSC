@@ -1,7 +1,3 @@
-/* --------------------------------------------------------------------------------------------
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the MIT License. See License.txt in the project root for license information.
- * ------------------------------------------------------------------------------------------ */
 import {
 	createConnection,
 	TextDocuments,
@@ -48,19 +44,26 @@ interface BuiltInModules {
 	name: string,
 	detail: string,
 	documentation: string,
-	methods: BuiltinModuleMethods[]
+	methods: BuiltInModuleMethods[]
 }
 
-interface BuiltinModuleMethods {
+interface BuiltInModuleMethods {
 	name: string,
 	detail: string,
 	documentation: string
 }
 
+interface Snippets {
+	[key: string]: {
+		content: string,
+		detail: string
+	}
+}
+
 const keywords: string[] = dictuLanguage.keywords;
 const builtIns: BuiltIns[] = dictuLanguage.builtins;
 const builtInModules: BuiltInModules[] = dictuLanguage.modules;
-const snippets: {[key: string]: {content: string, detail: string}} = dictuLanguage.snippets;
+const snippets: Snippets = dictuLanguage.snippets;
 
 let knownSymbols: CompletionItem[] = [];
 
@@ -224,7 +227,7 @@ function getPreviousToken(srcline: string, end: number) {
 	return "";
 }
 
-function findModuleMethods(name: string): BuiltinModuleMethods[] {
+function findModuleMethods(name: string): BuiltInModuleMethods[] {
 	for (let module of builtInModules) {
 		if (module.name == name) {
 			return module.methods;
@@ -258,7 +261,7 @@ connection.onCompletion(
 		switch (document.context?.triggerCharacter) {
 			case ".": {
 				const previousToken: string = getPreviousToken(content, position);
-				const builtInMethods: BuiltinModuleMethods[] = findModuleMethods(previousToken);
+				const builtInMethods: BuiltInModuleMethods[] = findModuleMethods(previousToken);
 
 				if (builtInMethods) {
 					return builtInMethods.map((method) => ({
