@@ -140,21 +140,6 @@ connection.onDidChangeConfiguration(change => {
 	}
 });
 
-function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
-	if (!hasConfigurationCapability) {
-		return Promise.resolve(globalSettings);
-	}
-	let result = documentSettings.get(resource);
-	if (!result) {
-		result = connection.workspace.getConfiguration({
-			scopeUri: resource,
-			section: 'dictuLanguageServer'
-		});
-		documentSettings.set(resource, result);
-	}
-	return result;
-}
-
 // Only keep settings for open documents
 documents.onDidClose(e => {
 	documentSettings.delete(e.document.uri);
@@ -204,7 +189,6 @@ documents.onDidChangeContent(change => {
 			symbols.push({
 				label: symbol.name,
 				kind: kind,
-				data: `known-${symbol.name}`,
 			});
 
 			foundSymbols.set(symbol.name, true);
@@ -284,7 +268,6 @@ connection.onCompletion(
 						modules.push({
 							label: module.name,
 							kind: CompletionItemKind.Module,
-							data: module,
 							detail: module.detail,
 							documentation: dictuDocumentationMarkdown(module.documentation)
 						});
@@ -298,8 +281,7 @@ connection.onCompletion(
 				for (let keyword of keywords) {
 					defaultCompletion.push({
 						label: keyword,
-						kind: CompletionItemKind.Keyword,
-						data: keyword
+						kind: CompletionItemKind.Keyword
 					});
 				}
 
@@ -307,7 +289,6 @@ connection.onCompletion(
 					defaultCompletion.push({
 						label: builtIn.name,
 						kind: CompletionItemKind.Function,
-						data: builtIn.name,
 						detail: builtIn.detail,
 						documentation: dictuDocumentationMarkdown(builtIn.documentation)
 					});
@@ -329,7 +310,6 @@ connection.onCompletion(
 					defaultCompletion.push({
 						label: snippet,
 						kind: CompletionItemKind.Snippet,
-						data: `snippet-${snippet}`,
 						insertTextFormat: InsertTextFormat.Snippet,
 						textEdit: textEdit,
 						detail: snippets[snippet].detail,
