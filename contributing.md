@@ -12,7 +12,7 @@
 └── server // Language Server
     └── src
 	    ├── language.json // Configuration file for language autocompletion
-      └── server.ts // Language Server entry point
+        └── server.ts // Language Server entry point
 ```
 
 ## Functionality
