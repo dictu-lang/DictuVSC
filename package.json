@@ -3,7 +3,7 @@
 	"description": "Dictu language server protocol",
 	"author": "Jason Hall",
 	"license": "MIT",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"icon": "logo.png",
 	"repository": {
 		"type": "git",
