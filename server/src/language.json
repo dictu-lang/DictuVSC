@@ -372,7 +372,31 @@
 		}
 	],
 	"builtins": [
-		"print", "input", "type", "assert", "isDefined"
+		{
+			"name": "print",
+			"detail": "Prints given values to the stdout",
+			"documentation": "print(10, 'test', nil, true); // 10, 'test', nil, true"
+		},
+		{
+			"name": "input",
+			"detail": "Retrieves input from stdin and returns value as a string",
+			"documentation": "input('Please enter your choice: '); // Optional prompt"
+		},
+		{
+			"name": "type",
+			"detail": "Returns the type of a given value as a string.",
+			"documentation": "type(10); // 'number'"
+		},
+		{
+			"name": "assert",
+			"detail": "Raise a runtime error if the given expression is not truthy.",
+			"documentation": "assert(10 > 9);"
+		},
+		{
+			"name": "isDefined",
+			"detail": "Returns a boolean depending on whether a variable has been defined in the global scope.",
+			"documentation": "isDefined('isDefined');"
+		}
 	],
 	"keywords": [
 		"class", "abstract", "trait", "use", "static", "public",
@@ -383,16 +407,6 @@
 		"return", "continue",
 		"with", "import", "from"
 	],
-	"explainations": {
-		"builtins-print": {
-			"detail": "Prints given values to the stdout",
-			"documentation": "print(10, 'test', nil, true); // 10, 'test', nil, true"
-		},
-		"builtins-input": {
-			"detail": "Retrieves input from stdin and returns value as a string",
-			"documentation": "input('Please enter your choice: '); // Optional prompt"
-		}
-	},
 	"snippets": {
 		"for": {
 			"detail": "For loop skeleton",

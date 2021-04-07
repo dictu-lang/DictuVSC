@@ -38,6 +38,12 @@ let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
+interface BuiltIns {
+	name: string,
+	detail: string,
+	documentation: string
+}
+
 interface BuiltinModuleMethods {
 	name: string,
 	detail: string,
@@ -45,8 +51,7 @@ interface BuiltinModuleMethods {
 }
 
 const keywords: string[] = dictuLanguage.keywords;
-const builtIns: string[] = dictuLanguage.builtins;
-const resolveExplainations: {[key: string]: {documentation: string; detail: string}} = dictuLanguage.explainations;
+const builtIns: BuiltIns[] = dictuLanguage.builtins;
 const builtInModules: {name: string; methods: BuiltinModuleMethods[]}[] = dictuLanguage.modules;
 const snippets: {[key: string]: {content: string, detail: string}} = dictuLanguage.snippets;
 
@@ -74,10 +79,8 @@ connection.onInitialize((params: InitializeParams) => {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			// Tell the client that this server supports code completion.
 			completionProvider: {
-				resolveProvider: true,
 				triggerCharacters: ['.']
-			},
-			// definitionProvider : true
+			}
 		}
 	};
 	if (hasWorkspaceFolderCapability) {
@@ -224,6 +227,17 @@ function findModuleMethods(name: string): BuiltinModuleMethods[] {
 	return [];
 }
 
+function dictuDocumentationMarkdown(documentation: string): MarkupContent {
+	return {
+		kind: MarkupKind.Markdown,
+		value: [
+			"```dictu",
+			documentation,
+			"```"
+		].join('\n')
+	};
+}
+
 // This handler provides the initial list of the completion items.
 connection.onCompletion(
 	(document: CompletionParams): CompletionItem[] => {
@@ -245,14 +259,7 @@ connection.onCompletion(
 						kind: CompletionItemKind.Method,
 						data: method.name,
 						detail: method.detail,
-						documentation: {
-							kind: MarkupKind.Markdown,
-							value: [
-								"```dictu",
-								method.documentation,
-								"```"
-							].join('\n')
-						}
+						documentation: dictuDocumentationMarkdown(method.documentation)
 					}));
 				}
 
@@ -286,9 +293,11 @@ connection.onCompletion(
 
 				for (let builtIn of builtIns) {
 					defaultCompletion.push({
-						label: builtIn,
+						label: builtIn.name,
 						kind: CompletionItemKind.Function,
-						data: `builtins-${builtIn}`
+						data: builtIn.name,
+						detail: builtIn.detail,
+						documentation: dictuDocumentationMarkdown(builtIn.documentation)
 					});
 				}
 
@@ -323,31 +332,6 @@ connection.onCompletion(
 				return defaultCompletion;
 			}
 		}
-	}
-);
-
-// This handler resolves additional information for the item selected in
-// the completion list.
-connection.onCompletionResolve(
-	(item: CompletionItem): CompletionItem => {
-		const key: string = item.data;
-		const explaination = resolveExplainations[key];
-
-		if (explaination !== undefined) {
-			const content: MarkupContent = {
-				value: [
-					"```dictu",
-					explaination.documentation,
-					"```"
-				].join('\n'),
-				kind: MarkupKind.Markdown
-			}
-
-			item.detail = explaination.detail;
-			item.documentation = content;
-		}
-
-		return item;
 	}
 );
 
