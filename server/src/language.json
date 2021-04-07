@@ -3,88 +3,371 @@
 		{
 			"name": "System",
 			"methods": [
-				"mkdir", "access", "rmdir", "remove", 
-				"getpid", "getppid", "getuid", "geteuid",
-				"getgid", "getegid", "getCWD", "setCWD",
-				"sleep", "clock", "time", "collect", "exit"
+				{
+					"name": "mkdir",
+					"detail": "Create a new directory with optional permissions. Returns a Result type and on success will unwrap nil.",
+					"documentation": "System.mkdir('test');"
+				},
+				{
+					"name": "access",
+					"detail": "Check user’s permissions for a file. Returns a Result type and on success will unwrap nil.",
+					"documentation": "System.access('/', F_OK);"
+				},
+				{
+					"name": "rmdir",
+					"detail": "Remove directory. Returns a Result type and on success will unwrap nil.",
+					"documentation": "System.rmdir(dir);"
+				},
+				{
+					"name": "remove",
+					"detail": "Delete a file from filesystem. Returns a Result type and on success will unwrap nil.",
+					"documentation": "System.remove(file);"
+				},
+				{
+					"name": "getpid",
+					"detail": "Returns the process ID (PID) of the calling process as a number. Note: Not available on windows.",
+					"documentation": "System.getpid();"
+				},
+				{
+					"name": "getppid",
+					"detail": "Returns the process ID of the parent of the calling process as a number. Note: Not available on windows.",
+					"documentation": "System.getppid();"
+				},
+				{
+					"name": "getuid",
+					"detail": "Returns the real user ID of the calling process as a number. Note: Not available on windows.",
+					"documentation": "System.getuid();"
+				},
+				{
+					"name": "geteuid",
+					"detail": "Returns the effective user ID of the calling process as a number. Note: Not available on windows.",
+					"documentation": "System.geteuid();"
+				},
+				{
+					"name": "getgid",
+					"detail": "Returns the real group ID of the calling process as a number. Note: Not available on windows.",
+					"documentation": "System.getgid();"
+				},
+				{
+					"name": "getegid",
+					"detail": "Returns the effective group ID of the calling process as a number. Note: Not available on windows.",
+					"documentation": "System.getegid();"
+				},
+				{
+					"name": "getCWD",
+					"detail": "Get the current working directory of the Dictu process. Returns a Result type and on success will unwrap a string.",
+					"documentation": "System.getCWD()"
+				},
+				{
+					"name": "setCWD",
+					"detail": "Set current working directory of the Dictu process. Returns a Result type and on success will unwrap a string.",
+					"documentation": "System.setCWD('/')"
+				},
+				{
+					"name": "sleep",
+					"detail": "Sleep pauses execution of the program for a given amount of time in seconds.",
+					"documentation": "System.sleep(10)"
+				},
+				{
+					"name": "clock",
+					"detail": "Returns number of clock ticks since the start of the program as a number, useful for benchmarks.",
+					"documentation": "System.clock()"
+				},
+				{
+					"name": "time",
+					"detail": "Returns UNIX timestamp as a number.",
+					"documentation": "System.time()"
+				},
+				{
+					"name": "collect",
+					"detail": "Manually trigger a garbage collection.",
+					"documentation": "System.collect()"
+				},
+				{
+					"name": "exit",
+					"detail": "When you wish to prematurely exit the script with a given exit code.",
+					"documentation": "System.exit(1)"
+				}
 			]
 		},
 		{
 			"name": "Datetime",
 			"methods": [
-				"now", "nowUTC", "strftime", "strptime"
+				{
+					"name": "now",
+					"detail": "Returns a human readable locale datetime string.",
+					"documentation": "Datetime.now(); // Fri May 29 03:12:32 2020"
+				},
+				{
+					"name": "nowUTC",
+					"detail": "Returns a human readable UTC datetime string.",
+					"documentation": "Datetime.nowUTC(); // Fri May 29 02:12:32 2020"
+				},
+				{
+					"name": "strftime",
+					"detail": "Returns a user-defined datetime formatted string. Takes an optional argument which is a UNIX timestamp, so the date is formatted from the given timestamp rather than the current point in time.",
+					"documentation": "Datetime.strftime('Today is %A'); // Today is Friday\n\nconst time = System.time();\nDatetime.strftime('Some point in time %H:%M:%S', time);"
+				},
+				{
+					"name": "strptime",
+					"detail": "Returns the number of seconds from epoch. Note: This is not available on windows systems.",
+					"documentation": "Datetime.strptime('%Y-%m-%d %H:%M:%S', '2020-01-01 00:00:00'); // 1577836800"
+				}
 			]
 		},
 		{
 			"name": "Math",
 			"methods": [
-				"min", "max", "average", "sum",
-				"floor", "round", "ceil", "abs",
-				"sqrt", "sin", "cos", "tan"
+				{
+					"name": "min",
+					"detail": "Return the smallest number within the list or passed arguments.",
+					"documentation": "Math.min(1, 2, 3);\n\nMath.min([1, 2, 3]);"
+				},
+				{
+					"name": "max",
+					"detail": "Return the largest number within the list or passed arguments.",
+					"documentation": "Math.max(1, 2, 3);\n\nMath.max([1, 2, 3]);"
+				},
+				{
+					"name": "average",
+					"detail": "Return the average number within the list or passed arguments.",
+					"documentation": "Math.average(1, 2, 3);\n\nMath.average([1, 2, 3]);"
+				},
+				{
+					"name": "sum",
+					"detail": "Return the sum of the list or passed arguments.",
+					"documentation": "Math.sum(1, 2, 3);\n\nMath.sum([1, 2, 3]);"
+				},
+				{
+					"name": "floor",
+					"detail": "Return the largest integer less than or equal to the given input.",
+					"documentation": "Math.floor(17.999);"
+				},
+				{
+					"name": "round",
+					"detail": "Round to the nearest integer.",
+					"documentation": "Math.round(17.49);"
+				},
+				{
+					"name": "ceil",
+					"detail": "Returns smallest integer greater than or equal to given input.",
+					"documentation": "Math.ceil(17.999);"
+				},
+				{
+					"name": "abs",
+					"detail": "Returns absolute value of a given number.",
+					"documentation": "Math.abs(-10);"
+				},
+				{
+					"name": "sqrt",
+					"detail": "Returns the square root of a given number.",
+					"documentation": "Math.sqrt(25);"
+				},
+				{
+					"name": "sin",
+					"detail": "Returns the sin value of a given number in radians.",
+					"documentation": "Math.sin(1);"
+				},
+				{
+					"name": "cos",
+					"detail": "Returns the cos value of a given number in radians.",
+					"documentation": "Math.cos(1);"
+				},
+				{
+					"name": "tan",
+					"detail": "Returns the tan value of a given number in radians.",
+					"documentation": "Math.tan(1);"
+				}
 			]
 		},
 		{
 			"name": "Path",
 			"methods": [
-				"basename", "dirname", "extname",
-				"isAbsolute", "realpath", "exists",
-				"isdir", "listdir"
+				{
+					"name": "basename",
+					"detail": "Returns the basename of the path.",
+					"documentation": "Path.basename('/usr/bin');"
+				},
+				{
+					"name": "dirname",
+					"detail": "Returns the directory name of the path.",
+					"documentation": "Path.dirname('/usr/bin');"
+				},
+				{
+					"name": "extname",
+					"detail": "Returns the extension portion of string, including the dot.",
+					"documentation": "Path.extname('/tmp/t.ext');"
+				},
+				{
+					"name": "isAbsolute",
+					"detail": "Returns true if path is absolute, false otherwise.",
+					"documentation": "Path.isAbsolute('/usr');"
+				},
+				{
+					"name": "realpath",
+					"detail": "Returns A Result type and unwraps the canonicalized absolute pathname as a string.",
+					"documentation": "Path.realpath('/dir/../dir/../dir');"
+				},
+				{
+					"name": "exists",
+					"detail": "Returns a boolean whether a file exists at a given path.",
+					"documentation": "Path.exists('/usr/bin');"
+				},
+				{
+					"name": "isDir",
+					"detail": "Checks whether a given path points to a directory or not. Note: This is not available on windows systems.",
+					"documentation": "Path.isDir('/usr/bin');"
+				},
+				{
+					"name": "listDir",
+					"detail": "Returns a list of strings containing the contents of the input path. Note: This function does not guarantee any ordering of the returned list.",
+					"documentation": "Path.listDir('/usr/bin');"
+				}
 			]
 		},
 		{
 			"name": "Env",
 			"methods": [
-				"get", "set"
+				{
+					"name": "get",
+					"detail": "Get an environment variable. .get() will return a string if a valid environment variable is found otherwise nil.",
+					"documentation": "Env.get('TOKEN');"
+				},
+				{
+					"name": "set",
+					"detail": "Change or add an environment variable. You can clear an environment variable by passing a nil value. When setting an environment variable the key must be a string and the value must be either a string or nil. Returns a Result type and on success will unwrap to nil.",
+					"documentation": "Env.set('key', 'test');\n\nEnv.set('key', nil); // Remove env var"
+				}
 			]
 		},
 		{
 			"name": "JSON",
 			"methods": [
-				"parse", "stringify"
+				{
+					"name": "parse",
+					"detail": "Parses a JSON string and turns it into a valid Dictu datatype. Returns a Result type and unwraps to datatype.",
+					"documentation": "JSON.parse('[1, 2, 3]');"
+				},
+				{
+					"name": "stringify",
+					"detail": "Stringify converts a Dictu value into a valid JSON string. Returns a Result type and unwraps to string.",
+					"documentation": "JSON.stringify([1, 2, 3]);"
+				}
 			]
 		},
 		{
 			"name": "HTTP",
 			"methods": [
-				"get", "post"
+				{
+					"name": "get",
+					"detail": "Sends a HTTP GET request to a given URL. Timeout is given in seconds. Returns a Result and unwraps to a dictionary upon success.",
+					"documentation": "HTTP.get('https://httpbin.org/get');"
+				},
+				{
+					"name": "post",
+					"detail": "Sends a HTTP POST request to a given URL.Timeout is given in seconds. Returns a Result and unwraps to a dictionary upon success.",
+					"documentation": "HTTP.post('https://httpbin.org/post');"
+				}
 			]
 		},
 		{
 			"name": "Socket",
 			"methods": [
-				"create", "bind", "connect",
-				"listen", "accept", "write",
-				"recv", "close", "setsocketopt"
+				{
+					"name": "create",
+					"detail": "Create a new socket object given a socket type and socket family. This will return a Result and unwrap to a new socket object in which the rest of the methods are ran on.",
+					"documentation": "Socket.create(Socket.AF_INET, Socket.SOCK_STREAM);"
+				}
 			]
 		},
 		{
 			"name": "Random",
 			"methods": [
-				"random", "range", "select"
+				{
+					"name": "random",
+					"detail": "Return a random decimal between 0 and 1.",
+					"documentation": "Random.random();"
+				},
+				{
+					"name": "range",
+					"detail": "Returns a random integer between the lowest and highest inputs (both inclusive).",
+					"documentation": "Random.range(1, 3);"
+				},
+				{
+					"name": "select",
+					"detail": "Returns a value randomly selected from the list.",
+					"documentation": "Random.select([1, 2, 3]);"
+				}
 			]
 		},
 		{
 			"name": "Base64",
 			"methods": [
-				"encode", "decode"
+				{
+					"name": "encode",
+					"detail": "Base64 encode a given string.",
+					"documentation": "Base64.encode('test');"
+				},
+				{
+					"name": "decode",
+					"detail": "Base64 decode a given string.",
+					"documentation": "Base64.decode('dGVzdA==');"
+				}
 			]
 		},
 		{
 			"name": "Hashlib",
 			"methods": [
-				"sha256", "hmac", "bcrypt", "bcryptVerify", "verify"
+				{
+					"name": "sha256",
+					"detail": "Hashes a given string using the SHA-256 algorithm.",
+					"documentation": "Hashlib.sha256('Dictu');"
+				},
+				{
+					"name": "hmac",
+					"detail": "Generate a HMAC using the SHA-256 algorithm. The raw optional argument determines whether the output will be in raw bytes or whether it will be in a string format, default is string format (false).",
+					"documentation": "Hashlib.hmac('supersecretkey', 'my message');"
+				},
+				{
+					"name": "bcrypt",
+					"detail": "Hashes a given string using the bcrypt algorithm. The rounds optional argument is the amount of rounds used to generate the hashed string, default is 8.",
+					"documentation": "Hashlib.bcrypt('my message');"
+				},
+				{
+					"name": "bcryptVerify",
+					"detail": "This verifies a given bcrypt hash matches the plaintext input with a boolean return value. The comparison method used is timing safe.",
+					"documentation": "Hashlib.bcryptVerify('my message', '$2b$08$mkI2fcaukY0XX3qlpdtBgeXq7pAUr2bUw4Z1OkmncuibJ0aHAyLRS');"
+				},
+				{
+					"name": "verify",
+					"detail": "Hashes a given string using the bcrypt algorithm. The rounds optional argument is the amount of rounds used to generate the hashed string, default is 8.Timing safe hash comparison. This should always be favoured over normal string comparison.",
+					"documentation": "Hashlib.verify(Hashlib.sha256('Dictu'), 'wrong');"
+				}
 			]
 		},
 		{
 			"name": "Process",
 			"methods": [
-				"exec", "run"
+				{
+					"name": "exec",
+					"detail": "Executing an external process can be done via .exec. Unlike .run() exec does not wait for the process to finish executing, so it is only useful for circumstances where you wish to “fire and forget”.\n\n.exec() expects a list as a parameter which is the command and any arguments for the command as individual list elements, which all must be strings. It will return a Result that unwraps to nil on success.",
+					"documentation": "Process.exec(['ls', '-la']);"
+				},
+				{
+					"name": "run",
+					"detail": "Similar to .run() except this will wait for the external process to finish executing.\n\n.run() expects a list as a parameter which is the command and any arguments for the command as individual list elements, and it will return a Result that unwraps to nil on success.\n\nIf the external process writes to stdout and you wish to capture the output you can pass an optional boolean argument to .run(), this will instead make the Result unwrap to a string of the captured output.",
+					"documentation": "Process.run(['ls', '-la'])"
+				}
 			]
 		},
 		{
 			"name": "Sqlite",
 			"methods": [
-				"connect", "execute", "close"
+				{
+					"name": "connect",
+					"detail": "This opens a connection to a SQLite database. Returns a Result type and on success wraps an abstract SQLite type.\n\nNote: You can pass “:memory:” to open the SQLite database in memory rather than a file.",
+					"documentation": "Sqlite.connect('my/database/file.db');"
+				}
 			]
 		}
 	],

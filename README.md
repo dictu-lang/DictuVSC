@@ -25,6 +25,14 @@ More planned.
 <em>(Auto Completion)</em>
 </p>
 
+### Documentation
+
+<p align=center>
+<img src="images/documentation.png" width=75%>
+<br/>
+<em>(Documentation)</em>
+</p>
+
 ## Contributing
 
 See [contributing](contributing.md).

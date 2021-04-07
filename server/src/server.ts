@@ -5,14 +5,11 @@
 import {
 	createConnection,
 	TextDocuments,
-	Diagnostic,
-	DiagnosticSeverity,
 	ProposedFeatures,
 	InitializeParams,
 	DidChangeConfigurationNotification,
 	CompletionItem,
 	CompletionItemKind,
-	TextDocumentPositionParams,
 	TextDocumentSyncKind,
 	InitializeResult,
 	CompletionParams,
@@ -41,10 +38,16 @@ let hasConfigurationCapability: boolean = false;
 let hasWorkspaceFolderCapability: boolean = false;
 let hasDiagnosticRelatedInformationCapability: boolean = false;
 
+interface BuiltinModuleMethods {
+	name: string,
+	detail: string,
+	documentation: string
+}
+
 const keywords: string[] = dictuLanguage.keywords;
 const builtIns: string[] = dictuLanguage.builtins;
 const resolveExplainations: {[key: string]: {documentation: string; detail: string}} = dictuLanguage.explainations;
-const builtInModules: {name: string; methods: string[]}[] = dictuLanguage.modules;
+const builtInModules: {name: string; methods: BuiltinModuleMethods[]}[] = dictuLanguage.modules;
 const snippets: {[key: string]: {content: string, detail: string}} = dictuLanguage.snippets;
 
 let knownSymbols: CompletionItem[] = [];
@@ -122,9 +125,6 @@ connection.onDidChangeConfiguration(change => {
 			(change.settings.dictuLanguageServer || defaultSettings)
 		);
 	}
-
-	// Revalidate all open text documents
-	// documents.all().forEach(validateTextDocument);
 });
 
 function getDocumentSettings(resource: string): Thenable<ExampleSettings> {
@@ -151,7 +151,7 @@ documents.onDidClose(e => {
 // when the text document first opened or when its content has changed.
 documents.onDidChangeContent(change => {
 	const content = change.document.getText();
-	const matches = content.matchAll(/(?:var|const|def|class|trait|import)\s+(?<name>[a-zA-Z0-9_]+)\s*(?:|{)/g);
+	const matches = content.matchAll(/(?<type>var|const|def|class|trait|import)\s+(?<name>[a-zA-Z0-9_]+)\s*(?:|{)/g);
 	let symbols: CompletionItem[] = [];
 	let foundSymbols: Map<string, boolean> = new Map();
 
@@ -159,11 +159,39 @@ documents.onDidChangeContent(change => {
 		let symbol = match.groups;
 
 		if (symbol && !foundSymbols.has(symbol.name)) {
+			let kind;
+
+			switch (symbol.type) {
+				case 'import': {
+					kind = CompletionItemKind.Module;
+					break;
+				}
+
+				case 'trait':
+				case 'class': {
+					kind = CompletionItemKind.Class;
+					break;
+				}
+
+				case 'def': {
+					kind = CompletionItemKind.Function;
+					break;
+				}
+
+				case 'const': {
+					kind = CompletionItemKind.Constant;
+					break;
+				}
+
+				default: {
+					kind = CompletionItemKind.Variable;
+				}
+			}
+
 			symbols.push({
 				label: symbol.name,
-				kind: symbol.name.charAt(0) == symbol.name.charAt(0).toLowerCase() ? 
-					CompletionItemKind.Variable : CompletionItemKind.Class,
-				data: `known-${symbol.name}`
+				kind: kind,
+				data: `known-${symbol.name}`,
 			});
 
 			foundSymbols.set(symbol.name, true);
@@ -171,63 +199,7 @@ documents.onDidChangeContent(change => {
 	}
 
 	knownSymbols = symbols;
-
-	// validateTextDocument(change.document);
 });
-
-// async function validateTextDocument(textDocument: TextDocument): Promise<void> {
-// 	// In this simple example we get the settings for every validate run.
-// 	let settings = await getDocumentSettings(textDocument.uri);
-
-// 	// The validator creates diagnostics for all uppercase words length 2 and more
-// 	let text = textDocument.getText();
-// 	let pattern = /\b[A-Z]{2,}\b/g;
-// 	let m: RegExpExecArray | null;
-
-// 	console.log(text);
-
-// 	let problems = 0;
-// 	let diagnostics: Diagnostic[] = [];
-// 	while ((m = pattern.exec(text)) && problems < settings.maxNumberOfProblems) {
-// 		problems++;
-// 		let diagnostic: Diagnostic = {
-// 			severity: DiagnosticSeverity.Warning,
-// 			range: {
-// 				start: textDocument.positionAt(m.index),
-// 				end: textDocument.positionAt(m.index + m[0].length)
-// 			},
-// 			message: `${m[0]} is all uppercase.`,
-// 			source: 'ex'
-// 		};
-// 		if (hasDiagnosticRelatedInformationCapability) {
-// 			diagnostic.relatedInformation = [
-// 				{
-// 					location: {
-// 						uri: textDocument.uri,
-// 						range: Object.assign({}, diagnostic.range)
-// 					},
-// 					message: 'Spelling matters'
-// 				},
-// 				{
-// 					location: {
-// 						uri: textDocument.uri,
-// 						range: Object.assign({}, diagnostic.range)
-// 					},
-// 					message: 'Particularly for names'
-// 				}
-// 			];
-// 		}
-// 		diagnostics.push(diagnostic);
-// 	}
-
-// 	// Send the computed diagnostics to VSCode.
-// 	connection.sendDiagnostics({ uri: textDocument.uri, diagnostics });
-// }
-
-// connection.onDidChangeWatchedFiles(_change => {
-// 	// Monitored files have change in VSCode
-// 	connection.console.log('We received an file change event');
-// });
 
 // TODO: Re-make
 function getPreviousToken(srcline: string, end: number) {
@@ -242,7 +214,7 @@ function getPreviousToken(srcline: string, end: number) {
 	return "";
 }
 
-function findModuleMethods(name: string): string[] {
+function findModuleMethods(name: string): BuiltinModuleMethods[] {
 	for (let module of builtInModules) {
 		if (module.name == name) {
 			return module.methods;
@@ -265,13 +237,22 @@ connection.onCompletion(
 		switch (document.context?.triggerCharacter) {
 			case ".": {
 				const previousToken: string = getPreviousToken(content, position);
-				const builtInMethods: string[] = findModuleMethods(previousToken);
+				const builtInMethods: BuiltinModuleMethods[] = findModuleMethods(previousToken);
 
 				if (builtInMethods) {
 					return builtInMethods.map((method) => ({
-						label: method,
+						label: method.name,
 						kind: CompletionItemKind.Method,
-						data: method
+						data: method.name,
+						detail: method.detail,
+						documentation: {
+							kind: MarkupKind.Markdown,
+							value: [
+								"```dictu",
+								method.documentation,
+								"```"
+							].join('\n')
+						}
 					}));
 				}
 
