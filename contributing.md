@@ -11,11 +11,11 @@
 ├── package.json // The extension manifest.
 └── server // Language Server
     └── src
-	    ├── language.json // Configuration file for language autocompletion
+	├── language.json // Configuration file for language autocompletion
         └── server.ts // Language Server entry point
 ```
 
-## Functionality
+## Functionality
 
 ### Syntax highlighting
 
