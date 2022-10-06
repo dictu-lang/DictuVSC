@@ -21,7 +21,7 @@
 		"onLanguage:dictu",
 		"workspaceContains:**/*.du"
 	],
-	"main": "./dist/extension",
+	"main": "./client/out/extension",
 	"contributes": {
 		"configuration": {
 			"type": "object",
