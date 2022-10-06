@@ -48,7 +48,7 @@
 				},
 				{
 					"name": "keyword.dictu",
-					"match": "\\b(def|var|const|class|trait|import|from|as|and|or|not|use)\\b"
+					"match": "\\b(def|var|const|class|enum|trait|import|from|as|and|or|not|use)\\b"
 				},
 				{
 					"name": "keyword.operator.dictu",

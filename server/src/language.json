@@ -425,7 +425,7 @@
 		}
 	],
 	"keywords": [
-		"class", "abstract", "trait", "use", "static", "public",
+		"class", "abstract", "trait", "use", "static", "public", "enum",
 		"this", "super", "def", "as",
 		"if", "and", "else", "or",
 		"var", "const", "true", "false", "nil",
