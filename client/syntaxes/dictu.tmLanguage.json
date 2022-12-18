@@ -32,7 +32,10 @@
 					"name": "comment.block.dictu",
 					"begin": "/\\*",
 					"end": "\\*/"
-				
+				},
+				{
+					"name": "comment.line.shebang.dictu",
+					"match": "(#!)"
 				}
 			]
 		},
@@ -84,7 +87,7 @@
 						}
 					]
 				}
-			] 
+			]
 		},
 		"numbers": {
 			"name": "constant.numeric.dictu",
