@@ -89,6 +89,26 @@
 					"name": "exit",
 					"detail": "When you wish to prematurely exit the script with a given exit code.",
 					"documentation": "System.exit(1)"
+				},
+				{
+					"name": "chmod",
+					"detail": "Set the permissions on a file or directory.",
+					"documentation": "System.chmod('/usr/local/share', '755')"
+				},
+				{
+					"name": "chown",
+					"detail": "Set the ownership of a file or directory with the given path, uid, and gid.",
+					"documentation": "System.chown('/path/to/file', 0, 0)"
+				},
+				{
+					"name": "uname",
+					"detail": "Returns the name and version of the system along with operating system and hardware information.",
+					"documentation": "System.uname()"
+				},
+				{
+					"name": "mkdirTemp",
+					"detail": "Makes a temporary directory. If an empty string is given, the temporary directory’s name will be a random string created in the current working directory. If a string is passed in, the temporary directory will be created with that name in the current working directory.",
+					"documentation": "System.mkdirTemp()"
 				}
 			]
 		},
@@ -183,6 +203,16 @@
 					"name": "tan",
 					"detail": "Returns the tan value of a given number in radians.",
 					"documentation": "Math.tan(1);"
+				},
+				{
+					"name": "gcd",
+					"detail": "Return the greatest common divisor of the numbers within the iterable",
+					"documentation": "Math.gcd(32, 24, 12);"
+				},
+				{
+					"name": "lcm",
+					"detail": "Return the least common multiple of the numbers within the iterable",
+					"documentation": "Math.lcm(32, 24, 12);"
 				}
 			]
 		},
@@ -230,6 +260,11 @@
 					"name": "listDir",
 					"detail": "Returns a list of strings containing the contents of the input path. Note: This function does not guarantee any ordering of the returned list.",
 					"documentation": "Path.listDir('/usr/bin');"
+				},
+				{
+					"name": "join",
+					"detail": "Returns the provided string arguments joined using the directory separator.",
+					"documentation": "Path.join('/tmp', 'abcd', 'efg');"
 				}
 			]
 		},
@@ -247,6 +282,16 @@
 					"name": "set",
 					"detail": "Change or add an environment variable. You can clear an environment variable by passing a nil value. When setting an environment variable the key must be a string and the value must be either a string or nil. Returns a Result type and on success will unwrap to nil.",
 					"documentation": "Env.set('key', 'test');\n\nEnv.set('key', nil); // Remove env var"
+				},
+				{
+					"name": "clearAll",
+					"detail": "Clears all set environment variables.",
+					"documentation": "Env.clearAll()"
+				},
+				{
+					"name": "readFile",
+					"detail": "To read environment variables from a file this helper method is provided. By default it will attempt to read .env unless a different path is supplied. Returns a Result type and on success will unwrap to nil.",
+					"documentation": "Env.readFile()"
 				}
 			]
 		},
@@ -281,6 +326,21 @@
 					"name": "post",
 					"detail": "Sends a HTTP POST request to a given URL.Timeout is given in seconds. Returns a Result and unwraps to a dictionary upon success.",
 					"documentation": "HTTP.post('https://httpbin.org/post');"
+				},
+				{
+					"name": "newClient",
+					"detail": "Creates a new HTTP client with a given set of options.",
+					"documentation": "HTTP.newClient(opts)"
+				},
+				{
+					"name": "httpClient.get",
+					"detail": "Sends a HTTP GET request to a given URL. Returns a Result and unwraps to a Response upon success.",
+					"documentation": "httpClient.get('https://httpbin.org/get');"
+				},
+				{
+					"name": "httpClient.post",
+					"detail": "Sends a HTTP POST request to a given URL. Returns a Result and unwraps to a Response upon success.",
+					"documentation": "httpClient.post('https://httpbin.org/post');"
 				}
 			]
 		},
@@ -385,6 +445,23 @@
 			]
 		},
 		{
+			"name": "Term",
+			"detail": "Module containing different methods that deal with terminals.",
+			"documentation": "",
+			"methods": [
+				{
+					"name": "isatty",
+					"detail": "Returns a boolean indicating whether the file descriptor passed is attached to a tty.",
+					"documentation": "Term.isatty(0);"
+				},
+				{
+					"name": "getSize",
+					"detail": "Returns the number of rows, columns, horizontal and vertical pixels of the attached terminal.",
+					"documentation": "Term.getSize()"
+				}
+			]
+		},
+		{
 			"name": "Sqlite",
 			"detail": "Module containing different methods that deal with SQLite.",
 			"documentation": "",
@@ -402,6 +479,11 @@
 			"name": "print",
 			"detail": "Prints given values to the stdout",
 			"documentation": "print(10, 'test', nil, true); // 10, 'test', nil, true"
+		},
+		{
+			"name": "printError",
+			"detail": "Prints a given list of values to stderr",
+			"documentation": "printError(10, 'test', nil, true); // 10, 'test', nil, true"
 		},
 		{
 			"name": "input",
@@ -425,13 +507,34 @@
 		}
 	],
 	"keywords": [
-		"class", "abstract", "trait", "use", "static", "public", "enum",
-		"this", "super", "def", "as",
-		"if", "and", "else", "or",
-		"var", "const", "true", "false", "nil",
-		"for", "while", "break",
-		"return", "continue",
-		"with", "import", "from"
+		"class",
+		"abstract",
+		"trait",
+		"use",
+		"static",
+		"public",
+		"enum",
+		"this",
+		"super",
+		"def",
+		"as",
+		"if",
+		"and",
+		"else",
+		"or",
+		"var",
+		"const",
+		"true",
+		"false",
+		"nil",
+		"for",
+		"while",
+		"break",
+		"return",
+		"continue",
+		"with",
+		"import",
+		"from"
 	],
 	"snippets": {
 		"for": {
@@ -453,6 +556,10 @@
 		"abstract class": {
 			"detail": "Abstract class skeleton",
 			"content": "abstract class $0 {\n\t\n}"
+		},
+		"match": {
+			"detail": "Match call for error handling",
+			"content": "match(\n\tdef(result) => result,\n\tdef(error) => error);"
 		}
 	}
 }
