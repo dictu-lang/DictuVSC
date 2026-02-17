@@ -9,6 +9,9 @@
 			"include": "#annotations"
 		},
 		{
+			"include": "#keywords"
+		},
+		{
 			"include": "#strings"
 		},
 		{
@@ -16,9 +19,6 @@
 		},
 		{
 			"include": "#names"
-		},
-		{
-			"include": "#keywords"
 		},
 		{
 			"include": "#operators"
@@ -194,19 +194,17 @@
 		"names": {
 			"patterns": [
 				{
-					"match": "\\b(class)\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*(<)\\s*([A-Za-z_][A-Za-z0-9_]*)",
+					"comment": "class Name < Parent — inheritance with both class and parent highlighted as types",
+					"match": "(?<=class\\s+)([A-Za-z_][A-Za-z0-9_]*)\\s*(<)\\s*([A-Za-z_][A-Za-z0-9_]*)",
 					"captures": {
 						"1": {
-							"name": "keyword.other.dictu"
-						},
-						"2": {
 							"name": "entity.name.type.class.dictu"
 						},
-						"3": {
+						"2": {
 							"name": "keyword.operator.inheritance.dictu"
 						},
-						"4": {
-							"name": "entity.other.inherited-class.dictu"
+						"3": {
+							"name": "entity.name.type.class.dictu"
 						}
 					}
 				},
@@ -215,11 +213,11 @@
 					"match": "(?<=class\\s+)[A-Za-z_][A-Za-z0-9_]*"
 				},
 				{
-					"name": "entity.name.type.trait.dictu",
+					"name": "entity.name.type.class.dictu",
 					"match": "(?<=trait\\s+)[A-Za-z_][A-Za-z0-9_]*"
 				},
 				{
-					"name": "entity.name.type.enum.dictu",
+					"name": "entity.name.type.class.dictu",
 					"match": "(?<=enum\\s+)[A-Za-z_][A-Za-z0-9_]*"
 				},
 				{
