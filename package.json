@@ -3,14 +3,18 @@
 	"description": "Dictu language server protocol",
 	"author": "Jason Hall",
 	"license": "MIT",
-	"version": "1.0.5",
+	"version": "2.0.0",
 	"icon": "logo.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/dictu-lang/DictuVSC"
 	},
 	"publisher": "Dictu",
-	"categories": [],
+	"categories": [
+		"Programming Languages",
+		"Snippets",
+		"Linters"
+	],
 	"keywords": [
 		"multi-root ready"
 	],
@@ -18,7 +22,6 @@
 		"vscode": "^1.43.0"
 	},
 	"activationEvents": [
-		"onLanguage:dictu",
 		"workspaceContains:**/*.du"
 	],
 	"main": "./client/out/extension",

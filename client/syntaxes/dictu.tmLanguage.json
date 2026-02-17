@@ -6,7 +6,7 @@
 			"include": "#comments"
 		},
 		{
-			"include": "#keywords"
+			"include": "#annotations"
 		},
 		{
 			"include": "#strings"
@@ -16,6 +16,12 @@
 		},
 		{
 			"include": "#names"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#operators"
 		},
 		{
 			"include": "#arguments"
@@ -35,7 +41,23 @@
 				},
 				{
 					"name": "comment.line.shebang.dictu",
-					"match": "(#!)"
+					"match": "^(#!.*)"
+				}
+			]
+		},
+		"annotations": {
+			"patterns": [
+				{
+					"name": "meta.annotation.dictu",
+					"match": "(@)([A-Za-z_][A-Za-z0-9_]*)",
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.annotation.dictu"
+						},
+						"2": {
+							"name": "entity.name.function.annotation.dictu"
+						}
+					}
 				}
 			]
 		},
@@ -43,28 +65,48 @@
 			"patterns": [
 				{
 					"name": "keyword.control.dictu",
-					"match": "\\b(if|else|while|for|return|break|continue|with)\\b"
+					"match": "\\b(if|else|while|for|return|break|continue|with|switch|case|default)\\b"
 				},
 				{
 					"name": "constant.language.dictu",
 					"match": "\\b(true|false|nil)\\b"
 				},
 				{
-					"name": "keyword.dictu",
-					"match": "\\b(def|var|const|class|enum|trait|import|from|as|and|or|not|use)\\b"
+					"name": "keyword.other.dictu",
+					"match": "\\b(def|var|const|class|enum|trait|import|from|as|use)\\b"
 				},
 				{
-					"name": "keyword.operator.dictu",
+					"name": "keyword.operator.logical.dictu",
 					"match": "\\b(and|or|not)\\b"
 				},
 				{
 					"name": "storage.modifier.dictu",
 					"match": "\\b(abstract|static|private)\\b"
+				},
+				{
+					"name": "support.function.builtin.dictu",
+					"match": "\\b(print|printError|input|type|assert|isDefined|set)\\b(?=\\s*\\()"
+				},
+				{
+					"name": "support.type.result.dictu",
+					"match": "\\b(Success|Error)\\b"
 				}
 			]
 		},
 		"strings": {
 			"patterns": [
+				{
+					"name": "string.quoted.raw.dictu",
+					"begin": "r\"",
+					"end": "\"",
+					"patterns": []
+				},
+				{
+					"name": "string.quoted.raw.dictu",
+					"begin": "r'",
+					"end": "'",
+					"patterns": []
+				},
 				{
 					"name": "string.quoted.double.dictu",
 					"begin": "\"",
@@ -72,7 +114,11 @@
 					"patterns": [
 						{
 							"name": "constant.character.escape.dictu",
-							"match": "\\\\."
+							"match": "\\\\(?:[\\\\\"'nrtv0]|x[0-9a-fA-F]{2})"
+						},
+						{
+							"name": "constant.other.placeholder.dictu",
+							"match": "\\{\\}"
 						}
 					]
 				},
@@ -83,24 +129,109 @@
 					"patterns": [
 						{
 							"name": "constant.character.escape.dictu",
-							"match": "\\\\."
+							"match": "\\\\(?:[\\\\\"'nrtv0]|x[0-9a-fA-F]{2})"
+						},
+						{
+							"name": "constant.other.placeholder.dictu",
+							"match": "\\{\\}"
 						}
 					]
 				}
 			]
 		},
 		"numbers": {
-			"name": "constant.numeric.dictu",
-			"match": "\\b[0-9]+(\\.[0-9]+)?\\b"
+			"patterns": [
+				{
+					"name": "constant.numeric.hex.dictu",
+					"match": "\\b0[xX][0-9a-fA-F]+\\b"
+				},
+				{
+					"name": "constant.numeric.float.dictu",
+					"match": "\\b[0-9]+\\.[0-9]+([eE][+-]?[0-9]+)?\\b"
+				},
+				{
+					"name": "constant.numeric.integer.dictu",
+					"match": "\\b[0-9]+\\b"
+				}
+			]
+		},
+		"operators": {
+			"patterns": [
+				{
+					"name": "keyword.operator.arrow.dictu",
+					"match": "=>"
+				},
+				{
+					"name": "keyword.operator.spread.dictu",
+					"match": "\\.\\.\\."
+				},
+				{
+					"name": "keyword.operator.optional-chaining.dictu",
+					"match": "\\?\\."
+				},
+				{
+					"name": "keyword.operator.comparison.dictu",
+					"match": "==|!=|<=|>=|<|>"
+				},
+				{
+					"name": "keyword.operator.assignment.compound.dictu",
+					"match": "\\+=|-=|\\*=|/=|&=|\\^=|\\|="
+				},
+				{
+					"name": "keyword.operator.arithmetic.dictu",
+					"match": "\\*\\*|[+\\-*/%]"
+				},
+				{
+					"name": "keyword.operator.bitwise.dictu",
+					"match": "[&^|]"
+				},
+				{
+					"name": "keyword.operator.ternary.dictu",
+					"match": "\\?"
+				}
+			]
 		},
 		"names": {
 			"patterns": [
 				{
-					"name": "entity.name.type.dictu",
-					"match": "\\b([A-Z][[[:alnum:]]_]*)\\b"
+					"match": "\\b(class)\\s+([A-Za-z_][A-Za-z0-9_]*)\\s*(<)\\s*([A-Za-z_][A-Za-z0-9_]*)",
+					"captures": {
+						"1": {
+							"name": "keyword.other.dictu"
+						},
+						"2": {
+							"name": "entity.name.type.class.dictu"
+						},
+						"3": {
+							"name": "keyword.operator.inheritance.dictu"
+						},
+						"4": {
+							"name": "entity.other.inherited-class.dictu"
+						}
+					}
 				},
 				{
-					"match": "\\b([[:alpha:]][[[:alnum:]]_]*)\\s*\\(",
+					"name": "entity.name.type.class.dictu",
+					"match": "(?<=class\\s+)[A-Za-z_][A-Za-z0-9_]*"
+				},
+				{
+					"name": "entity.name.type.trait.dictu",
+					"match": "(?<=trait\\s+)[A-Za-z_][A-Za-z0-9_]*"
+				},
+				{
+					"name": "entity.name.type.enum.dictu",
+					"match": "(?<=enum\\s+)[A-Za-z_][A-Za-z0-9_]*"
+				},
+				{
+					"name": "entity.name.function.definition.dictu",
+					"match": "(?<=def\\s+)[a-zA-Z_][a-zA-Z0-9_]*"
+				},
+				{
+					"name": "entity.name.type.dictu",
+					"match": "\\b([A-Z][A-Za-z0-9_]*)\\b"
+				},
+				{
+					"match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\s*\\(",
 					"captures": {
 						"1": {
 							"name": "entity.name.function.dictu"
@@ -116,8 +247,12 @@
 					"match": "\\b(super)\\b"
 				},
 				{
-					"name": "variable.dictu",
-					"match": "\\b([[:alpha:]][[[:alnum:]]_]*)\\b"
+					"name": "variable.other.property.dictu",
+					"match": "(?<=\\.)[a-zA-Z_][a-zA-Z0-9_]*"
+				},
+				{
+					"name": "variable.other.dictu",
+					"match": "\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b"
 				}
 			]
 		},
@@ -125,7 +260,7 @@
 			"patterns": [
 				{
 					"name": "variable.parameter.dictu",
-					"match": "(?<=\\()\\s*([[:alpha:]][[:alnum:]]*)(?:\\s*,\\s*([[:alpha:]][[:alnum:]]*))*\\s*(?=\\))"
+					"match": "(?<=\\()\\s*([a-zA-Z_][a-zA-Z0-9_]*)(?:\\s*,\\s*([a-zA-Z_][a-zA-Z0-9_]*))*\\s*(?=\\))"
 				}
 			]
 		}
