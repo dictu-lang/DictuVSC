@@ -87,6 +87,495 @@ const typeMethods: TypeMethods = dictuLanguage.typeMethods;
 let knownSymbols: CompletionItem[] = [];
 
 // ============================================================
+// Type inference engine
+// ============================================================
+
+type DictuType = string | null;
+
+/** Maps method names → return types, keyed by the receiver type */
+const _mrt: Record<string, Record<string, DictuType>> = {};
+function mrt(receiverType: string, methods: Record<string, DictuType>) { _mrt[receiverType] = methods; }
+mrt('string', {
+	len: 'number', lower: 'string', upper: 'string', title: 'string',
+	toNumber: 'result', toBool: 'bool', toString: 'string',
+	startsWith: 'bool', endsWith: 'bool', contains: 'bool',
+	isUpper: 'bool', isLower: 'bool',
+	split: 'list', replace: 'string', strip: 'string',
+	leftStrip: 'string', rightStrip: 'string', format: 'string',
+	find: 'number', findLast: 'number', count: 'number', wordCount: 'number',
+	repeat: 'string', collapseSpaces: 'string', wrap: 'string',
+});
+mrt('number', { toString: 'string', toBool: 'bool' });
+mrt('bool', { toString: 'string' });
+mrt('nil', { toString: 'string', toBool: 'bool' });
+mrt('list', {
+	len: 'number', toString: 'string', toBool: 'bool',
+	push: 'nil', insert: 'nil', extend: 'nil', remove: 'nil',
+	pop: null, contains: 'bool', join: 'string',
+	copy: 'list', deepCopy: 'list', sort: 'nil', sortFunc: 'nil', reverse: 'nil',
+	map: 'list', filter: 'list', splice: 'list', unique: 'list',
+	reduce: null, forEach: 'nil', find: null, findIndex: 'number',
+});
+mrt('dict', {
+	len: 'number', toString: 'string', toBool: 'bool',
+	keys: 'list', get: null, exists: 'bool', remove: 'nil',
+	copy: 'dict', deepCopy: 'dict', forEach: 'nil', merge: 'dict',
+	toObj: 'class',
+});
+mrt('set', {
+	len: 'number', toString: 'string', toBool: 'bool',
+	add: 'nil', remove: 'nil', contains: 'bool', containsAll: 'bool',
+	values: 'list',
+});
+mrt('result', {
+	unwrap: null, unwrapError: 'string', success: 'bool',
+	match: null, matchWrap: 'result', matchError: null,
+});
+mrt('file', {
+	read: 'string', readLine: 'string', write: 'number', writeLine: 'number', seek: 'nil',
+});
+mrt('class', {
+	toString: 'string', toDict: 'dict', methods: 'list',
+	hasAttribute: 'bool', getAttribute: null, getAttributes: 'dict',
+	setAttribute: 'nil', isInstance: 'bool',
+	copy: 'class', deepCopy: 'class',
+});
+const methodReturnTypes = _mrt;
+
+/** Maps module.method → return type */
+const moduleMethodReturnTypes: { [key: string]: DictuType } = {
+	// Math
+	'Math.min': 'number', 'Math.max': 'number', 'Math.average': 'number', 'Math.sum': 'number',
+	'Math.floor': 'number', 'Math.ceil': 'number', 'Math.round': 'number', 'Math.abs': 'number',
+	'Math.sqrt': 'number', 'Math.sin': 'number', 'Math.cos': 'number', 'Math.tan': 'number',
+	'Math.gcd': 'number', 'Math.lcm': 'number',
+	// System
+	'System.getCWD': 'result', 'System.setCWD': 'result',
+	'System.getpid': 'number', 'System.getppid': 'number',
+	'System.getuid': 'number', 'System.geteuid': 'number',
+	'System.getgid': 'number', 'System.getegid': 'number',
+	'System.clock': 'number', 'System.time': 'number',
+	'System.mkdir': 'result', 'System.mkdirAll': 'result', 'System.rmdir': 'result',
+	'System.remove': 'result', 'System.rename': 'result',
+	'System.mkdirTemp': 'result', 'System.chmod': 'result', 'System.chown': 'result',
+	'System.uname': 'dict', 'System.sleep': 'nil', 'System.collect': 'nil', 'System.exit': 'nil',
+	// Datetime
+	'Datetime.now': 'string', 'Datetime.nowUTC': 'string',
+	'Datetime.strftime': 'string', 'Datetime.strptime': 'number',
+	// Path
+	'Path.basename': 'string', 'Path.dirname': 'string', 'Path.extname': 'string',
+	'Path.join': 'string', 'Path.realpath': 'result',
+	'Path.isAbsolute': 'bool', 'Path.exists': 'bool', 'Path.isDir': 'bool', 'Path.isSymbolicLink': 'bool',
+	'Path.listDir': 'list',
+	// Env
+	'Env.get': 'string', 'Env.set': 'result', 'Env.readFile': 'result',
+	// JSON
+	'JSON.parse': 'result', 'JSON.stringify': 'result',
+	// HTTP
+	'HTTP.get': 'result', 'HTTP.post': 'result', 'HTTP.put': 'result',
+	'HTTP.head': 'result', 'HTTP.options': 'result',
+	// Random
+	'Random.random': 'number', 'Random.range': 'number', 'Random.select': null,
+	// Base64
+	'Base64.encode': 'string', 'Base64.decode': 'string',
+	// Hashlib
+	'Hashlib.sha256': 'string', 'Hashlib.hmac': 'string', 'Hashlib.bcrypt': 'string',
+	'Hashlib.bcryptVerify': 'bool', 'Hashlib.verify': 'bool',
+	// Process
+	'Process.exec': 'result', 'Process.run': 'result', 'Process.kill': 'result',
+	// IO
+	'IO.print': 'nil', 'IO.println': 'nil', 'IO.eprint': 'nil', 'IO.eprintln': 'nil',
+	'IO.copyFile': 'result',
+	// Sqlite
+	'Sqlite.connect': 'result',
+	// Socket
+	'Socket.create': 'result',
+	// UUID
+	'UUID.generate': 'result', 'UUID.generateRandom': 'result', 'UUID.generateTime': 'result',
+	// Buffer
+	'Buffer.new': 'result', 'Buffer.fromString': 'result',
+	// Queue / Stack
+	'Queue.new': null, 'Queue.newWithSize': 'result',
+	'Stack.new': null, 'Stack.newWithSize': 'result',
+	// BigInt
+	'BigInt.new': 'result',
+	// Log
+	'Log.new': 'result', 'Log.print': 'nil', 'Log.println': 'nil',
+	'Log.fatal': 'nil', 'Log.fatalln': 'nil',
+	// Net
+	'Net.parseIp4': 'result',
+	// Object
+	'Object.getClassRef': 'result', 'Object.createFrom': 'result',
+	'Object.hash': 'string', 'Object.prettyPrint': 'nil',
+	// Inspect
+	'Inspect.getFrameCount': 'number', 'Inspect.getLine': 'number', 'Inspect.getFile': 'string',
+	// Term
+	'Term.isatty': 'bool', 'Term.getSize': 'list',
+	// FFI
+	'FFI.load': null,
+	// Argparse
+	'Argparse.Parser': null,
+};
+
+/** Maps module constants → types */
+const moduleConstantTypes: { [key: string]: DictuType } = {
+	'Math.pi': 'number', 'Math.e': 'number', 'Math.phi': 'number',
+	'Math.sqrt2': 'number', 'Math.sqrte': 'number', 'Math.sqrtpi': 'number',
+	'Math.sqrtphi': 'number', 'Math.ln2': 'number', 'Math.ln10': 'number',
+	'System.argv': 'list', 'System.platform': 'string', 'System.arch': 'string',
+	'System.version': 'string',
+	'Datetime.SECONDS_IN_MINUTE': 'number', 'Datetime.SECONDS_IN_HOUR': 'number',
+	'Datetime.SECONDS_IN_DAY': 'number', 'Datetime.SECONDS_IN_WEEK': 'number',
+	'Path.delimiter': 'string', 'Path.dirSeparator': 'string',
+	'IO.devNull': 'string',
+	'Log.stdout': 'number', 'Log.stderr': 'number', 'Log.stdin': 'number',
+	'FFI.suffix': 'string',
+};
+
+/** Maps builtin function names → return types */
+const builtinReturnTypes: { [name: string]: DictuType } = {
+	'print': 'nil', 'printError': 'nil', 'input': 'string',
+	'type': 'string', 'assert': 'nil', 'isDefined': 'bool',
+	'set': 'set', 'Success': 'result', 'Error': 'result',
+};
+
+/** Per-document variable type tracking: variable name → inferred type */
+const documentVariableTypes: Map<string, Map<string, DictuType>> = new Map();
+
+/** Module names for checking if a token is a known module */
+const moduleNames = new Set(builtInModules.map(m => m.name));
+
+/**
+ * Parse all variable/const declarations in a document and infer their types
+ * from the right-hand side expression.
+ */
+function parseVariableTypes(doc: TextDocument): Map<string, DictuType> {
+	const types = new Map<string, DictuType>();
+	const content = doc.getText();
+	const lines = content.split('\n');
+
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+
+		// var name = expr; / const name = expr;
+		const varMatch = line.match(/\b(?:var|const)\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)/);
+		if (varMatch) {
+			const varName = varMatch[1];
+			const rhs = varMatch[2].trim().replace(/;$/, '').trim();
+			const t = inferExpressionType(rhs, types);
+			if (t) types.set(varName, t);
+			continue;
+		}
+
+		// def name — it's a function
+		const defMatch = line.match(/\bdef\s+([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/);
+		if (defMatch) {
+			types.set(defMatch[1], 'function');
+			continue;
+		}
+
+		// class Name — it's a class
+		const classMatch = line.match(/\bclass\s+([A-Za-z_][A-Za-z0-9_]*)/);
+		if (classMatch) {
+			types.set(classMatch[1], 'class');
+			continue;
+		}
+
+		// enum Name — it's an enum
+		const enumMatch = line.match(/\benum\s+([A-Za-z_][A-Za-z0-9_]*)/);
+		if (enumMatch) {
+			types.set(enumMatch[1], 'enum');
+			continue;
+		}
+
+		// trait Name — interface-like
+		const traitMatch = line.match(/\btrait\s+([A-Za-z_][A-Za-z0-9_]*)/);
+		if (traitMatch) {
+			types.set(traitMatch[1], 'class');
+			continue;
+		}
+
+		// import Module;
+		const importMatch = line.match(/\bimport\s+([A-Za-z_][A-Za-z0-9_]*)\s*;/);
+		if (importMatch) {
+			types.set(importMatch[1], 'module');
+			continue;
+		}
+
+		// Reassignment: name = expr; (track latest type for var)
+		const reassignMatch = line.match(/^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*(.+)/);
+		if (reassignMatch) {
+			const varName = reassignMatch[1];
+			// Only update if it was already a known variable (not a new field assignment like this.x = ...)
+			if (types.has(varName)) {
+				const rhs = reassignMatch[2].trim().replace(/;$/, '').trim();
+				const t = inferExpressionType(rhs, types);
+				if (t) types.set(varName, t);
+			}
+		}
+	}
+
+	return types;
+}
+
+/**
+ * Infer the type of an expression string.
+ * This handles literals, function calls, method chains, and variable references.
+ */
+function inferExpressionType(expr: string, varTypes: Map<string, DictuType>): DictuType {
+	expr = expr.trim();
+	if (!expr) return null;
+
+	// --- Literals ---
+	// String literal
+	if (/^r?["']/.test(expr)) return 'string';
+	// Boolean
+	if (expr === 'true' || expr === 'false') return 'bool';
+	// Nil
+	if (expr === 'nil') return 'nil';
+	// Number (int, float, hex, with underscores)
+	if (/^0[xX][0-9a-fA-F_]+$/.test(expr) || /^[0-9][0-9_]*(\.[0-9_]+)?([eE][+-]?[0-9]+)?$/.test(expr)) return 'number';
+	// List literal
+	if (expr.startsWith('[')) return 'list';
+	// Dict literal — starts with { and has a colon
+	if (expr.startsWith('{') && expr.includes(':')) return 'dict';
+	// Set literal — starts with { without colon is ambiguous, but set() is the constructor
+	if (/^set\s*\(/.test(expr)) return 'set';
+	// Success/Error constructors
+	if (/^Success\s*\(/.test(expr)) return 'result';
+	if (/^Error\s*\(/.test(expr)) return 'result';
+
+	// --- Builtin function calls ---
+	const builtinCallMatch = expr.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/);
+	if (builtinCallMatch && builtinReturnTypes[builtinCallMatch[1]] !== undefined) {
+		return builtinReturnTypes[builtinCallMatch[1]];
+	}
+
+	// --- Method chain / dot expressions: walk from left to right ---
+	// We need to handle: Module.method(...), var.method(), literal.method().method(), etc.
+	if (expr.includes('.')) {
+		const resolvedType = resolveChainedType(expr, varTypes);
+		if (resolvedType) return resolvedType;
+	}
+
+	// --- Simple variable reference ---
+	const simpleVar = expr.match(/^([a-zA-Z_][a-zA-Z0-9_]*)$/);
+	if (simpleVar) {
+		return varTypes.get(simpleVar[1]) || null;
+	}
+
+	// --- Constructor call: ClassName(...) where name starts with uppercase ---
+	if (builtinCallMatch && /^[A-Z]/.test(builtinCallMatch[1]) && !moduleNames.has(builtinCallMatch[1])) {
+		return 'class';
+	}
+
+	return null;
+}
+
+/**
+ * Resolve the type of a chained dot expression by walking left to right.
+ * E.g. "myList.map(fn).join(',')" → list → list → string
+ */
+function resolveChainedType(expr: string, varTypes: Map<string, DictuType>): DictuType {
+	// Tokenize the chain, respecting parentheses and strings
+	const segments = splitDotExpression(expr);
+	if (segments.length === 0) return null;
+
+	// Determine type of the first segment (the base)
+	let currentType = inferBaseType(segments[0], varTypes);
+
+	// Walk through remaining segments
+	for (let i = 1; i < segments.length; i++) {
+		if (!currentType) break;
+		const seg = segments[i];
+		const methodMatch = seg.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/);
+		const propMatch = seg.match(/^([a-zA-Z_][a-zA-Z0-9_]*)$/);
+
+		if (currentType === 'module' && i === 1) {
+			// Module.method() or Module.constant
+			const moduleName = segments[0].trim();
+			if (methodMatch) {
+				const key = `${moduleName}.${methodMatch[1]}`;
+				currentType = moduleMethodReturnTypes[key] ?? null;
+			} else if (propMatch) {
+				const key = `${moduleName}.${propMatch[1]}`;
+				currentType = moduleConstantTypes[key] ?? null;
+			} else {
+				currentType = null;
+			}
+		} else if (methodMatch) {
+			// Type method: currentType.methodName(...)
+			const methodName = methodMatch[1];
+			const typeMap = methodReturnTypes[currentType];
+			if (typeMap && methodName in typeMap) {
+				currentType = typeMap[methodName];
+			} else {
+				currentType = null;
+			}
+		} else {
+			// Property access — can't determine type
+			currentType = null;
+		}
+	}
+
+	return currentType;
+}
+
+/**
+ * Infer the type of the first segment (base) of a dot expression.
+ */
+function inferBaseType(base: string, varTypes: Map<string, DictuType>): DictuType {
+	base = base.trim();
+
+	// String literal
+	if (/^r?["']/.test(base) || /["']$/.test(base)) return 'string';
+	// Number literal
+	if (/^[0-9]/.test(base) || /^0[xX]/.test(base)) return 'number';
+	// List literal
+	if (base.startsWith('[') || base.endsWith(']')) return 'list';
+	// Dict literal
+	if (base.startsWith('{') || (base.endsWith('}') && base.includes(':'))) return 'dict';
+	// Boolean
+	if (base === 'true' || base === 'false') return 'bool';
+	// Nil
+	if (base === 'nil') return 'nil';
+	// set()
+	if (/^set\s*\(/.test(base)) return 'set';
+	// Success/Error
+	if (/^Success\s*\(/.test(base)) return 'result';
+	if (/^Error\s*\(/.test(base)) return 'result';
+
+	// Module name check
+	if (moduleNames.has(base)) return 'module';
+
+	// Function call — check builtins
+	const callMatch = base.match(/^([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/);
+	if (callMatch) {
+		if (builtinReturnTypes[callMatch[1]] !== undefined) return builtinReturnTypes[callMatch[1]];
+		// Constructor with uppercase
+		if (/^[A-Z]/.test(callMatch[1]) && !moduleNames.has(callMatch[1])) return 'class';
+		// User-defined function — return type unknown
+		return null;
+	}
+
+	// Parenthesized expression ending with )
+	if (base.endsWith(')')) {
+		// Could be (expr) or func(args) — try to extract inner
+		return null;
+	}
+
+	// Variable reference
+	const varType = varTypes.get(base);
+	if (varType) return varType;
+
+	// this/super → class
+	if (base === 'this' || base === 'super') return 'class';
+
+	return null;
+}
+
+/**
+ * Split "a.b(x.y).c" into ["a", "b(x.y)", "c"] respecting parens, brackets, strings.
+ */
+function splitDotExpression(expr: string): string[] {
+	const segments: string[] = [];
+	let current = '';
+	let depth = 0; // () and [] depth
+	let inStr: string | null = null;
+
+	for (let i = 0; i < expr.length; i++) {
+		const ch = expr[i];
+
+		if (inStr) {
+			current += ch;
+			if (ch === '\\' && i + 1 < expr.length) { current += expr[++i]; continue; }
+			if (ch === inStr) inStr = null;
+			continue;
+		}
+
+		if (ch === '"' || ch === "'") {
+			inStr = ch;
+			current += ch;
+			continue;
+		}
+
+		if (ch === '(' || ch === '[' || ch === '{') { depth++; current += ch; continue; }
+		if (ch === ')' || ch === ']' || ch === '}') { depth--; current += ch; continue; }
+
+		if (ch === '.' && depth === 0) {
+			if (current.trim()) segments.push(current.trim());
+			current = '';
+			continue;
+		}
+
+		current += ch;
+	}
+	if (current.trim()) segments.push(current.trim());
+	return segments;
+}
+
+/**
+ * Main entry: infer the type of the expression immediately before the dot
+ * at the given position on the given line. Uses variable types for the document.
+ */
+function inferTypeBeforeDot(line: string, dotPosition: number, docUri: string): DictuType {
+	const beforeDot = line.substring(0, dotPosition).trim();
+	if (!beforeDot) return null;
+
+	const varTypes = documentVariableTypes.get(docUri) || new Map();
+
+	// Try full expression type resolution
+	const expr = extractExpressionBeforeDot(beforeDot);
+	return inferExpressionType(expr, varTypes);
+}
+
+/**
+ * Extract the expression ending at the dot from the line prefix.
+ * Walks backwards from the end, handling balanced parens/brackets/strings.
+ */
+function extractExpressionBeforeDot(text: string): string {
+	let i = text.length - 1;
+	let depth = 0;
+
+	// Walk backwards to find the start of the expression
+	while (i >= 0) {
+		const ch = text[i];
+
+		if (ch === ')' || ch === ']' || ch === '}') { depth++; i--; continue; }
+		if (ch === '(' || ch === '[' || ch === '{') {
+			if (depth > 0) { depth--; i--; continue; }
+			break;
+		}
+
+		if (depth > 0) { i--; continue; }
+
+		// String delimiters at the end
+		if (ch === '"' || ch === "'") {
+			// Walk back to find the matching opening quote
+			const quote = ch;
+			i--;
+			while (i >= 0 && text[i] !== quote) {
+				if (text[i] === '\\' && i > 0) i--; // skip escape
+				i--;
+			}
+			// Check for raw string prefix
+			if (i > 0 && text[i - 1] === 'r') i--;
+			continue;
+		}
+
+		// Identifiers, digits, dots (for chains)
+		if (/[a-zA-Z0-9_.]/.test(ch)) { i--; continue; }
+
+		// Anything else (operator, space, comma, etc.) — stop
+		i++;
+		break;
+	}
+
+	if (i < 0) i = 0;
+	return text.substring(i).trim();
+}
+
+// ============================================================
 // Symbol definition tracking
 // ============================================================
 
@@ -279,6 +768,7 @@ connection.onDidChangeConfiguration(change => {
 documents.onDidClose(e => {
 	documentSettings.delete(e.document.uri);
 	documentSymbols.delete(e.document.uri);
+	documentVariableTypes.delete(e.document.uri);
 });
 
 // ============================================================
@@ -294,6 +784,10 @@ documents.onDidChangeContent(change => {
 
 	const defs = parseDocumentSymbols(doc);
 	documentSymbols.set(doc.uri, defs);
+
+	// Parse and track variable types for this document
+	const varTypes = parseVariableTypes(doc);
+	documentVariableTypes.set(doc.uri, varTypes);
 
 	const matches = content.matchAll(/(?<type>var|const|def|class|trait|enum|import|as)\s+(?<name>[a-zA-Z_][a-zA-Z0-9_]*)/g);
 	let symbols: CompletionItem[] = [];
@@ -450,14 +944,7 @@ function findModuleConstants(name: string): ModuleConstant[] {
 	return [];
 }
 
-function getTypeFromContext(content: string, position: number, line: string): string | null {
-	const beforeDot = line.substring(0, position).trim();
-	if (beforeDot.endsWith("'") || beforeDot.endsWith('"')) return 'string';
-	if (beforeDot.endsWith(']')) return 'list';
-	if (beforeDot.endsWith('}')) { if (beforeDot.slice(0, -1).trim().includes(':')) return 'dict'; }
-	if (/\d$/.test(beforeDot) && !beforeDot.endsWith('.')) return 'number';
-	return null;
-}
+// getTypeFromContext is now replaced by inferTypeBeforeDot (see type inference engine above)
 
 function dictuDocumentationMarkdown(documentation: string): MarkupContent {
 	return { kind: MarkupKind.Markdown, value: "```dictu\n" + documentation + "\n```" };
@@ -1021,6 +1508,7 @@ connection.onCompletion((document: CompletionParams): CompletionItem[] => {
 
 	switch (document.context?.triggerCharacter) {
 		case ".": {
+			// First check if this is a known module (Module.)
 			const previousToken: string = getPreviousToken(line, position);
 			const builtInMethods = findModuleMethods(previousToken);
 			const builtInConstants = findModuleConstants(previousToken);
@@ -1032,9 +1520,13 @@ connection.onCompletion((document: CompletionParams): CompletionItem[] => {
 				return items;
 			}
 
-			const inferredType = getTypeFromContext(content, position, line);
-			if (inferredType) return buildTypeMethodCompletions(inferredType);
+			// Use the type inference engine to determine what's before the dot
+			const inferredType = inferTypeBeforeDot(line, position, document.textDocument.uri);
+			if (inferredType && inferredType !== 'module') {
+				return buildTypeMethodCompletions(inferredType);
+			}
 
+			// Fallback: offer all methods from all types
 			let allMethods: CompletionItem[] = [];
 			for (const typeName of Object.keys(typeMethods)) {
 				for (const method of typeMethods[typeName]) {
@@ -1087,11 +1579,14 @@ connection.onHover((params: HoverParams): Hover | null => {
 	if (!word) return null;
 
 	let fullToken = word;
+	let receiverType: DictuType = null;
 	if (wordStart > 0 && line[wordStart - 1] === '.') {
 		let moduleStart = wordStart - 1;
 		while (moduleStart > 0 && /[a-zA-Z0-9_]/.test(line[moduleStart - 1])) moduleStart--;
 		const moduleName = line.substring(moduleStart, wordStart - 1);
 		if (moduleName) fullToken = `${moduleName}.${word}`;
+		// Infer the receiver type to give context-specific hover
+		receiverType = inferTypeBeforeDot(line, wordStart - 1, params.textDocument.uri);
 	}
 
 	const info = hoverMap.get(fullToken) || hoverMap.get(word);
@@ -1102,6 +1597,19 @@ connection.onHover((params: HoverParams): Hover | null => {
 		};
 	}
 
+	// If we know the receiver type, show only that type's method info
+	if (receiverType && typeMethods[receiverType]) {
+		for (const method of typeMethods[receiverType]) {
+			if (method.name === word) {
+				return {
+					contents: { kind: MarkupKind.Markdown, value: `**(${receiverType} method) ${method.name}**\n\n${method.detail}\n\n\`\`\`dictu\n${method.documentation}\n\`\`\`` },
+					range: Range.create(params.position.line, wordStart, params.position.line, wordEnd)
+				};
+			}
+		}
+	}
+
+	// Fallback: search all type methods
 	for (const typeName of Object.keys(typeMethods)) {
 		for (const method of typeMethods[typeName]) {
 			if (method.name === word) {
@@ -1117,8 +1625,12 @@ connection.onHover((params: HoverParams): Hover | null => {
 	if (defs.length > 0) {
 		const d = defs[0];
 		const kindLabel = d.kind === 'def' ? 'function' : d.kind;
+		// Show inferred type if available
+		const varTypes = documentVariableTypes.get(params.textDocument.uri);
+		const inferredType = varTypes?.get(word);
+		const typeInfo = inferredType ? `: ${inferredType}` : '';
 		return {
-			contents: { kind: MarkupKind.Markdown, value: `**(${kindLabel})** \`${word}\`` },
+			contents: { kind: MarkupKind.Markdown, value: `**(${kindLabel})** \`${word}\`${typeInfo}` },
 			range: Range.create(params.position.line, wordStart, params.position.line, wordEnd)
 		};
 	}
