@@ -3,14 +3,18 @@
 	"description": "Dictu language server protocol",
 	"author": "Jason Hall",
 	"license": "MIT",
-	"version": "1.0.5",
+	"version": "2.0.0",
 	"icon": "logo.png",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/dictu-lang/DictuVSC"
 	},
 	"publisher": "Dictu",
-	"categories": [],
+	"categories": [
+		"Programming Languages",
+		"Snippets",
+		"Linters"
+	],
 	"keywords": [
 		"multi-root ready"
 	],
@@ -18,11 +22,69 @@
 		"vscode": "^1.43.0"
 	},
 	"activationEvents": [
-		"onLanguage:dictu",
 		"workspaceContains:**/*.du"
 	],
 	"main": "./client/out/extension",
 	"contributes": {
+		"commands": [
+			{
+				"command": "dictu.runFile",
+				"title": "Run Dictu File",
+				"category": "Dictu",
+				"icon": "$(play)"
+			},
+			{
+				"command": "dictu.runSelection",
+				"title": "Run Selection/Line in Dictu",
+				"category": "Dictu"
+			},
+			{
+				"command": "dictu.newFile",
+				"title": "New Dictu File",
+				"category": "Dictu",
+				"icon": "$(file-add)"
+			},
+			{
+				"command": "dictu.toggleBlockComment",
+				"title": "Toggle Block Comment",
+				"category": "Dictu"
+			}
+		],
+		"keybindings": [
+			{
+				"command": "dictu.runFile",
+				"key": "ctrl+shift+r",
+				"mac": "cmd+shift+r",
+				"when": "editorLangId == dictu"
+			},
+			{
+				"command": "dictu.runSelection",
+				"key": "ctrl+shift+enter",
+				"mac": "cmd+shift+enter",
+				"when": "editorLangId == dictu"
+			}
+		],
+		"menus": {
+			"editor/title/run": [
+				{
+					"command": "dictu.runFile",
+					"when": "resourceLangId == dictu",
+					"group": "navigation"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "dictu.runFile",
+					"when": "resourceLangId == dictu",
+					"group": "1_run@1"
+				},
+				{
+					"command": "dictu.runSelection",
+					"when": "resourceLangId == dictu && editorHasSelection",
+					"group": "1_run@2"
+				}
+			]
+		},
 		"configuration": {
 			"type": "object",
 			"title": "Dictu LSP",
@@ -43,6 +105,24 @@
 					],
 					"default": "off",
 					"description": "Traces the communication between VS Code and the language server."
+				},
+				"dictu.dictuPath": {
+					"scope": "machine-overridable",
+					"type": "string",
+					"default": "dictu",
+					"description": "Path to the Dictu executable. Defaults to 'dictu' (must be on PATH)."
+				},
+				"dictu.formatOnSave": {
+					"scope": "resource",
+					"type": "boolean",
+					"default": false,
+					"description": "Automatically format Dictu files on save."
+				},
+				"dictu.indentSize": {
+					"scope": "resource",
+					"type": "number",
+					"default": 4,
+					"description": "Number of spaces per indentation level for the Dictu formatter."
 				}
 			}
 		},
@@ -57,7 +137,11 @@
 					".du",
 					".dictu"
 				],
-				"configuration": "./client/language-configuration.json"
+				"configuration": "./client/language-configuration.json",
+				"icon": {
+					"light": "./logo.png",
+					"dark": "./logo.png"
+				}
 			}
 		],
 		"grammars": [

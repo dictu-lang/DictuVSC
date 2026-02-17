@@ -2,564 +2,1066 @@
 	"modules": [
 		{
 			"name": "System",
-			"detail": "Module containing different methods that allow system interaction",
-			"documentation": "",
+			"detail": "Module for system-level operations and process information",
+			"documentation": "import System;",
 			"methods": [
 				{
 					"name": "mkdir",
-					"detail": "Create a new directory with optional permissions. Returns a Result type and on success will unwrap nil.",
-					"documentation": "System.mkdir('test');"
+					"detail": "Create a new directory with optional permissions. Returns a Result type.",
+					"documentation": "System.mkdir('test');\nSystem.mkdir('test', S_IRWXU);"
+				},
+				{
+					"name": "mkdirAll",
+					"detail": "Create a directory and all parent directories that don't exist. Returns a Result type.",
+					"documentation": "System.mkdirAll('/path/to/nested/dir');"
 				},
 				{
 					"name": "access",
-					"detail": "Check user’s permissions for a file. Returns a Result type and on success will unwrap nil.",
-					"documentation": "System.access('/', F_OK);"
+					"detail": "Check user's permissions for a file. Returns a Result type.",
+					"documentation": "System.access('/', F_OK);\nSystem.access('/tmp', R_OK);"
 				},
 				{
 					"name": "rmdir",
-					"detail": "Remove directory. Returns a Result type and on success will unwrap nil.",
+					"detail": "Remove directory. Returns a Result type.",
 					"documentation": "System.rmdir(dir);"
 				},
 				{
 					"name": "remove",
-					"detail": "Delete a file from filesystem. Returns a Result type and on success will unwrap nil.",
+					"detail": "Delete a file from filesystem. Returns a Result type.",
 					"documentation": "System.remove(file);"
 				},
 				{
+					"name": "rename",
+					"detail": "Rename a file or directory. Returns a Result type.",
+					"documentation": "System.rename('old.txt', 'new.txt');"
+				},
+				{
 					"name": "getpid",
-					"detail": "Returns the process ID (PID) of the calling process as a number. Note: Not available on windows.",
-					"documentation": "System.getpid();"
+					"detail": "Returns the process ID (PID) of the calling process. Not available on Windows.",
+					"documentation": "System.getpid(); // 12345"
 				},
 				{
 					"name": "getppid",
-					"detail": "Returns the process ID of the parent of the calling process as a number. Note: Not available on windows.",
+					"detail": "Returns the process ID of the parent of the calling process. Not available on Windows.",
 					"documentation": "System.getppid();"
 				},
 				{
 					"name": "getuid",
-					"detail": "Returns the real user ID of the calling process as a number. Note: Not available on windows.",
+					"detail": "Returns the real user ID of the calling process. Not available on Windows.",
 					"documentation": "System.getuid();"
 				},
 				{
 					"name": "geteuid",
-					"detail": "Returns the effective user ID of the calling process as a number. Note: Not available on windows.",
+					"detail": "Returns the effective user ID of the calling process. Not available on Windows.",
 					"documentation": "System.geteuid();"
 				},
 				{
 					"name": "getgid",
-					"detail": "Returns the real group ID of the calling process as a number. Note: Not available on windows.",
+					"detail": "Returns the real group ID of the calling process. Not available on Windows.",
 					"documentation": "System.getgid();"
 				},
 				{
 					"name": "getegid",
-					"detail": "Returns the effective group ID of the calling process as a number. Note: Not available on windows.",
+					"detail": "Returns the effective group ID of the calling process. Not available on Windows.",
 					"documentation": "System.getegid();"
 				},
 				{
 					"name": "getCWD",
-					"detail": "Get the current working directory of the Dictu process. Returns a Result type and on success will unwrap a string.",
-					"documentation": "System.getCWD()"
+					"detail": "Get the current working directory. Returns a Result that unwraps to a string.",
+					"documentation": "System.getCWD().unwrap(); // '/home/user'"
 				},
 				{
 					"name": "setCWD",
-					"detail": "Set current working directory of the Dictu process. Returns a Result type and on success will unwrap a string.",
-					"documentation": "System.setCWD('/')"
+					"detail": "Set the current working directory. Returns a Result type.",
+					"documentation": "System.setCWD('/');"
 				},
 				{
 					"name": "sleep",
-					"detail": "Sleep pauses execution of the program for a given amount of time in seconds.",
-					"documentation": "System.sleep(10)"
+					"detail": "Pause execution for a given number of seconds.",
+					"documentation": "System.sleep(3);"
 				},
 				{
 					"name": "clock",
-					"detail": "Returns number of clock ticks since the start of the program as a number, useful for benchmarks.",
-					"documentation": "System.clock()"
+					"detail": "Returns number of clock ticks since program start, useful for benchmarks.",
+					"documentation": "var start = System.clock();\n// ... work ...\nprint(System.clock() - start);"
 				},
 				{
 					"name": "time",
-					"detail": "Returns UNIX timestamp as a number.",
-					"documentation": "System.time()"
+					"detail": "Returns the current UNIX timestamp as a number.",
+					"documentation": "System.time(); // 1590712352"
 				},
 				{
 					"name": "collect",
 					"detail": "Manually trigger a garbage collection.",
-					"documentation": "System.collect()"
+					"documentation": "System.collect();"
 				},
 				{
 					"name": "exit",
-					"detail": "When you wish to prematurely exit the script with a given exit code.",
-					"documentation": "System.exit(1)"
+					"detail": "Prematurely exit the script with a given exit code.",
+					"documentation": "System.exit(0); // Success\nSystem.exit(1); // Error"
 				},
 				{
 					"name": "chmod",
 					"detail": "Set the permissions on a file or directory.",
-					"documentation": "System.chmod('/usr/local/share', '755')"
+					"documentation": "System.chmod('/usr/local/share', S_IRWXU);"
 				},
 				{
 					"name": "chown",
-					"detail": "Set the ownership of a file or directory with the given path, uid, and gid.",
-					"documentation": "System.chown('/path/to/file', 0, 0)"
+					"detail": "Set the ownership of a file or directory with path, uid, and gid.",
+					"documentation": "System.chown('/path/to/file', 0, 0);"
 				},
 				{
 					"name": "uname",
-					"detail": "Returns the name and version of the system along with operating system and hardware information.",
-					"documentation": "System.uname()"
+					"detail": "Returns system name, version, OS, and hardware info as a dictionary.",
+					"documentation": "System.uname();\n// {'sysname': 'Darwin', 'nodename': '...', ...}"
 				},
 				{
 					"name": "mkdirTemp",
-					"detail": "Makes a temporary directory. If an empty string is given, the temporary directory’s name will be a random string created in the current working directory. If a string is passed in, the temporary directory will be created with that name in the current working directory.",
-					"documentation": "System.mkdirTemp()"
+					"detail": "Makes a temporary directory. Pass empty string for random name in CWD.",
+					"documentation": "System.mkdirTemp();\nSystem.mkdirTemp('prefix');"
 				}
+			],
+			"constants": [
+				{"name": "argv", "detail": "List of command line arguments"},
+				{"name": "platform", "detail": "The platform string (e.g. 'linux', 'darwin', 'windows')"},
+				{"name": "arch", "detail": "The architecture string (e.g. 'x86_64', 'aarch64')"},
+				{"name": "version", "detail": "The Dictu version string"},
+				{"name": "S_IRWXU", "detail": "Read, write, execute by owner"},
+				{"name": "S_IRUSR", "detail": "Read by owner"},
+				{"name": "S_IWUSR", "detail": "Write by owner"},
+				{"name": "S_IXUSR", "detail": "Execute by owner"},
+				{"name": "S_IRWXG", "detail": "Read, write, execute by group"},
+				{"name": "S_IRGRP", "detail": "Read by group"},
+				{"name": "S_IWGRP", "detail": "Write by group"},
+				{"name": "S_IXGRP", "detail": "Execute by group"},
+				{"name": "S_IRWXO", "detail": "Read, write, execute by others"},
+				{"name": "S_IROTH", "detail": "Read by others"},
+				{"name": "S_IWOTH", "detail": "Write by others"},
+				{"name": "S_IXOTH", "detail": "Execute by others"},
+				{"name": "F_OK", "detail": "Check file existence"},
+				{"name": "R_OK", "detail": "Check read permission"},
+				{"name": "W_OK", "detail": "Check write permission"},
+				{"name": "X_OK", "detail": "Check execute permission"}
 			]
 		},
 		{
 			"name": "Datetime",
-			"detail": "Module containing different methods that deal with date and time",
-			"documentation": "",
+			"detail": "Module for date and time operations",
+			"documentation": "import Datetime;",
 			"methods": [
 				{
 					"name": "now",
-					"detail": "Returns a human readable locale datetime string.",
-					"documentation": "Datetime.now(); // Fri May 29 03:12:32 2020"
+					"detail": "Returns a human-readable locale datetime string.",
+					"documentation": "Datetime.now(); // 'Fri May 29 03:12:32 2020'"
 				},
 				{
 					"name": "nowUTC",
-					"detail": "Returns a human readable UTC datetime string.",
-					"documentation": "Datetime.nowUTC(); // Fri May 29 02:12:32 2020"
+					"detail": "Returns a human-readable UTC datetime string.",
+					"documentation": "Datetime.nowUTC(); // 'Fri May 29 02:12:32 2020'"
 				},
 				{
 					"name": "strftime",
-					"detail": "Returns a user-defined datetime formatted string. Takes an optional argument which is a UNIX timestamp, so the date is formatted from the given timestamp rather than the current point in time.",
-					"documentation": "Datetime.strftime('Today is %A'); // Today is Friday\n\nconst time = System.time();\nDatetime.strftime('Some point in time %H:%M:%S', time);"
+					"detail": "Returns a formatted datetime string. Optional UNIX timestamp argument.",
+					"documentation": "Datetime.strftime('Today is %A');\n// 'Today is Friday'\n\nDatetime.strftime('%H:%M:%S', System.time());"
 				},
 				{
 					"name": "strptime",
-					"detail": "Returns the number of seconds from epoch. Note: This is not available on windows systems.",
-					"documentation": "Datetime.strptime('%Y-%m-%d %H:%M:%S', '2020-01-01 00:00:00'); // 1577836800"
+					"detail": "Parse a date string and return seconds from epoch. Not available on Windows.",
+					"documentation": "Datetime.strptime('%Y-%m-%d %H:%M:%S', '2020-01-01 00:00:00');\n// 1577836800"
 				}
+			],
+			"constants": [
+				{"name": "SECONDS_IN_MINUTE", "detail": "60"},
+				{"name": "SECONDS_IN_HOUR", "detail": "3600"},
+				{"name": "SECONDS_IN_DAY", "detail": "86400"},
+				{"name": "SECONDS_IN_WEEK", "detail": "604800"}
 			]
 		},
 		{
 			"name": "Math",
-			"detail": "Module containing different methods that expose math functions",
-			"documentation": "",
+			"detail": "Module for mathematical functions and constants",
+			"documentation": "import Math;",
 			"methods": [
 				{
 					"name": "min",
-					"detail": "Return the smallest number within the list or passed arguments.",
-					"documentation": "Math.min(1, 2, 3);\n\nMath.min([1, 2, 3]);"
+					"detail": "Return the smallest number from arguments or a list.",
+					"documentation": "Math.min(1, 2, 3); // 1\nMath.min([1, 2, 3]); // 1"
 				},
 				{
 					"name": "max",
-					"detail": "Return the largest number within the list or passed arguments.",
-					"documentation": "Math.max(1, 2, 3);\n\nMath.max([1, 2, 3]);"
+					"detail": "Return the largest number from arguments or a list.",
+					"documentation": "Math.max(1, 2, 3); // 3\nMath.max([1, 2, 3]); // 3"
 				},
 				{
 					"name": "average",
-					"detail": "Return the average number within the list or passed arguments.",
-					"documentation": "Math.average(1, 2, 3);\n\nMath.average([1, 2, 3]);"
+					"detail": "Return the average of arguments or a list.",
+					"documentation": "Math.average(1, 2, 3); // 2\nMath.average([1, 2, 3]); // 2"
 				},
 				{
 					"name": "sum",
-					"detail": "Return the sum of the list or passed arguments.",
-					"documentation": "Math.sum(1, 2, 3);\n\nMath.sum([1, 2, 3]);"
+					"detail": "Return the sum of arguments or a list.",
+					"documentation": "Math.sum(1, 2, 3); // 6\nMath.sum([1, 2, 3]); // 6"
 				},
 				{
 					"name": "floor",
-					"detail": "Return the largest integer less than or equal to the given input.",
-					"documentation": "Math.floor(17.999);"
+					"detail": "Return the largest integer less than or equal to the input.",
+					"documentation": "Math.floor(17.999); // 17"
 				},
 				{
 					"name": "round",
 					"detail": "Round to the nearest integer.",
-					"documentation": "Math.round(17.49);"
+					"documentation": "Math.round(17.49); // 17"
 				},
 				{
 					"name": "ceil",
-					"detail": "Returns smallest integer greater than or equal to given input.",
-					"documentation": "Math.ceil(17.999);"
+					"detail": "Return the smallest integer greater than or equal to the input.",
+					"documentation": "Math.ceil(17.001); // 18"
 				},
 				{
 					"name": "abs",
-					"detail": "Returns absolute value of a given number.",
-					"documentation": "Math.abs(-10);"
+					"detail": "Return the absolute value of a number.",
+					"documentation": "Math.abs(-10); // 10"
 				},
 				{
 					"name": "sqrt",
-					"detail": "Returns the square root of a given number.",
-					"documentation": "Math.sqrt(25);"
+					"detail": "Return the square root of a number.",
+					"documentation": "Math.sqrt(25); // 5"
 				},
 				{
 					"name": "sin",
-					"detail": "Returns the sin value of a given number in radians.",
+					"detail": "Return the sine of a number in radians.",
 					"documentation": "Math.sin(1);"
 				},
 				{
 					"name": "cos",
-					"detail": "Returns the cos value of a given number in radians.",
+					"detail": "Return the cosine of a number in radians.",
 					"documentation": "Math.cos(1);"
 				},
 				{
 					"name": "tan",
-					"detail": "Returns the tan value of a given number in radians.",
+					"detail": "Return the tangent of a number in radians.",
 					"documentation": "Math.tan(1);"
 				},
 				{
 					"name": "gcd",
-					"detail": "Return the greatest common divisor of the numbers within the iterable",
-					"documentation": "Math.gcd(32, 24, 12);"
+					"detail": "Return the greatest common divisor of the given numbers.",
+					"documentation": "Math.gcd(32, 24, 12); // 4"
 				},
 				{
 					"name": "lcm",
-					"detail": "Return the least common multiple of the numbers within the iterable",
-					"documentation": "Math.lcm(32, 24, 12);"
+					"detail": "Return the least common multiple of the given numbers.",
+					"documentation": "Math.lcm(32, 24, 12); // 96"
 				}
+			],
+			"constants": [
+				{"name": "pi", "detail": "3.14159265358979"},
+				{"name": "e", "detail": "2.71828182845905"},
+				{"name": "phi", "detail": "1.61803398874989"},
+				{"name": "sqrt2", "detail": "1.41421356237310"},
+				{"name": "sqrte", "detail": "1.64872127070013"},
+				{"name": "sqrtpi", "detail": "1.77245385090552"},
+				{"name": "sqrtphi", "detail": "1.27201964951407"},
+				{"name": "ln2", "detail": "0.693147180559945"},
+				{"name": "ln10", "detail": "2.30258509299405"}
 			]
 		},
 		{
 			"name": "Path",
-			"detail": "Module containing different methods that allow filesystem interaction",
-			"documentation": "",
+			"detail": "Module for filesystem path operations",
+			"documentation": "import Path;",
 			"methods": [
 				{
 					"name": "basename",
-					"detail": "Returns the basename of the path.",
-					"documentation": "Path.basename('/usr/bin');"
+					"detail": "Returns the basename of a path.",
+					"documentation": "Path.basename('/usr/bin'); // 'bin'"
 				},
 				{
 					"name": "dirname",
-					"detail": "Returns the directory name of the path.",
-					"documentation": "Path.dirname('/usr/bin');"
+					"detail": "Returns the directory name of a path.",
+					"documentation": "Path.dirname('/usr/bin'); // '/usr'"
 				},
 				{
 					"name": "extname",
-					"detail": "Returns the extension portion of string, including the dot.",
-					"documentation": "Path.extname('/tmp/t.ext');"
+					"detail": "Returns the extension portion, including the dot.",
+					"documentation": "Path.extname('/tmp/t.ext'); // '.ext'"
 				},
 				{
 					"name": "isAbsolute",
-					"detail": "Returns true if path is absolute, false otherwise.",
-					"documentation": "Path.isAbsolute('/usr');"
+					"detail": "Returns true if path is absolute.",
+					"documentation": "Path.isAbsolute('/usr'); // true"
 				},
 				{
 					"name": "realpath",
-					"detail": "Returns A Result type and unwraps the canonicalized absolute pathname as a string.",
-					"documentation": "Path.realpath('/dir/../dir/../dir');"
+					"detail": "Returns the canonicalized absolute pathname. Returns a Result type.",
+					"documentation": "Path.realpath('/dir/../dir');"
 				},
 				{
 					"name": "exists",
 					"detail": "Returns a boolean whether a file exists at a given path.",
-					"documentation": "Path.exists('/usr/bin');"
+					"documentation": "Path.exists('/usr/bin'); // true"
 				},
 				{
 					"name": "isDir",
-					"detail": "Checks whether a given path points to a directory or not. Note: This is not available on windows systems.",
-					"documentation": "Path.isDir('/usr/bin');"
+					"detail": "Returns true if path points to a directory. Not available on Windows.",
+					"documentation": "Path.isDir('/usr/bin'); // true"
+				},
+				{
+					"name": "isSymbolicLink",
+					"detail": "Returns true if path points to a symbolic link.",
+					"documentation": "Path.isSymbolicLink('/usr/bin/python');"
 				},
 				{
 					"name": "listDir",
-					"detail": "Returns a list of strings containing the contents of the input path. Note: This function does not guarantee any ordering of the returned list.",
+					"detail": "Returns a list of the contents of the path. No guaranteed ordering.",
 					"documentation": "Path.listDir('/usr/bin');"
 				},
 				{
 					"name": "join",
-					"detail": "Returns the provided string arguments joined using the directory separator.",
-					"documentation": "Path.join('/tmp', 'abcd', 'efg');"
+					"detail": "Join path segments using the directory separator.",
+					"documentation": "Path.join('/tmp', 'abcd', 'efg');\n// '/tmp/abcd/efg'"
 				}
+			],
+			"constants": [
+				{"name": "delimiter", "detail": "Path delimiter for the platform (':' or ';')"},
+				{"name": "dirSeparator", "detail": "Directory separator for the platform ('/' or '\\\\')"}
 			]
 		},
 		{
 			"name": "Env",
-			"detail": "Module containing different methods that allow environment variable interaction",
-			"documentation": "",
+			"detail": "Module for environment variable operations",
+			"documentation": "import Env;",
 			"methods": [
 				{
 					"name": "get",
-					"detail": "Get an environment variable. .get() will return a string if a valid environment variable is found otherwise nil.",
-					"documentation": "Env.get('TOKEN');"
+					"detail": "Get an environment variable. Returns string if found, otherwise nil.",
+					"documentation": "Env.get('TOKEN');\nEnv.get('HOME', '/default');"
 				},
 				{
 					"name": "set",
-					"detail": "Change or add an environment variable. You can clear an environment variable by passing a nil value. When setting an environment variable the key must be a string and the value must be either a string or nil. Returns a Result type and on success will unwrap to nil.",
-					"documentation": "Env.set('key', 'test');\n\nEnv.set('key', nil); // Remove env var"
+					"detail": "Set or clear an environment variable. Pass nil to clear. Returns a Result type.",
+					"documentation": "Env.set('key', 'test');\nEnv.set('key', nil); // Remove"
 				},
 				{
 					"name": "clearAll",
-					"detail": "Clears all set environment variables.",
-					"documentation": "Env.clearAll()"
+					"detail": "Clear all environment variables.",
+					"documentation": "Env.clearAll();"
 				},
 				{
 					"name": "readFile",
-					"detail": "To read environment variables from a file this helper method is provided. By default it will attempt to read .env unless a different path is supplied. Returns a Result type and on success will unwrap to nil.",
-					"documentation": "Env.readFile()"
+					"detail": "Read environment variables from a .env file. Returns a Result type.",
+					"documentation": "Env.readFile(); // Reads .env\nEnv.readFile('/path/to/.env');"
 				}
 			]
 		},
 		{
 			"name": "JSON",
-			"detail": "Module containing different methods that deal with JSON",
-			"documentation": "",
+			"detail": "Module for JSON parsing and serialization",
+			"documentation": "import JSON;",
 			"methods": [
 				{
 					"name": "parse",
-					"detail": "Parses a JSON string and turns it into a valid Dictu datatype. Returns a Result type and unwraps to datatype.",
-					"documentation": "JSON.parse('[1, 2, 3]');"
+					"detail": "Parse a JSON string into a Dictu value. Returns a Result type.",
+					"documentation": "JSON.parse('[1, 2, 3]').unwrap();\n// [1, 2, 3]"
 				},
 				{
 					"name": "stringify",
-					"detail": "Stringify converts a Dictu value into a valid JSON string. Returns a Result type and unwraps to string.",
-					"documentation": "JSON.stringify([1, 2, 3]);"
+					"detail": "Convert a Dictu value into a JSON string. Optional indent parameter. Returns a Result type.",
+					"documentation": "JSON.stringify([1, 2, 3]).unwrap();\n// '[1,2,3]'\n\nJSON.stringify({'key': 'val'}, 4).unwrap();"
 				}
 			]
 		},
 		{
 			"name": "HTTP",
-			"detail": "Module containing different methods that deal with HTTP",
-			"documentation": "",
+			"detail": "Module for HTTP requests",
+			"documentation": "import HTTP;",
 			"methods": [
 				{
 					"name": "get",
-					"detail": "Sends a HTTP GET request to a given URL. Timeout is given in seconds. Returns a Result and unwraps to a dictionary upon success.",
-					"documentation": "HTTP.get('https://httpbin.org/get');"
+					"detail": "Send a HTTP GET request. Returns a Result with response dict.",
+					"documentation": "var response = HTTP.get('https://httpbin.org/get');\nresponse.unwrap()['content'];\nresponse.unwrap()['statusCode'];\nresponse.unwrap()['headers'];"
 				},
 				{
 					"name": "post",
-					"detail": "Sends a HTTP POST request to a given URL.Timeout is given in seconds. Returns a Result and unwraps to a dictionary upon success.",
-					"documentation": "HTTP.post('https://httpbin.org/post');"
+					"detail": "Send a HTTP POST request. Returns a Result with response dict.",
+					"documentation": "HTTP.post('https://httpbin.org/post', {'key': 'value'});"
+				},
+				{
+					"name": "put",
+					"detail": "Send a HTTP PUT request. Returns a Result with response dict.",
+					"documentation": "HTTP.put('https://httpbin.org/put', {'key': 'value'});"
+				},
+				{
+					"name": "head",
+					"detail": "Send a HTTP HEAD request. Returns a Result with response dict.",
+					"documentation": "HTTP.head('https://httpbin.org/get');"
+				},
+				{
+					"name": "options",
+					"detail": "Send a HTTP OPTIONS request. Returns a Result with response dict.",
+					"documentation": "HTTP.options('https://httpbin.org/get');"
 				},
 				{
 					"name": "newClient",
-					"detail": "Creates a new HTTP client with a given set of options.",
-					"documentation": "HTTP.newClient(opts)"
-				},
-				{
-					"name": "httpClient.get",
-					"detail": "Sends a HTTP GET request to a given URL. Returns a Result and unwraps to a Response upon success.",
-					"documentation": "httpClient.get('https://httpbin.org/get');"
-				},
-				{
-					"name": "httpClient.post",
-					"detail": "Sends a HTTP POST request to a given URL. Returns a Result and unwraps to a Response upon success.",
-					"documentation": "httpClient.post('https://httpbin.org/post');"
+					"detail": "Create a new HTTP client with given options (timeout, headers, insecure).",
+					"documentation": "var client = HTTP.newClient({\n    'timeout': 20,\n    'headers': ['Content-Type: application/json'],\n    'insecure': false\n});"
 				}
 			]
 		},
 		{
 			"name": "Socket",
-			"detail": "Module containing different methods that deal with sockets",
-			"documentation": "",
+			"detail": "Module for socket operations",
+			"documentation": "import Socket;",
 			"methods": [
 				{
 					"name": "create",
-					"detail": "Create a new socket object given a socket type and socket family. This will return a Result and unwrap to a new socket object in which the rest of the methods are ran on.",
-					"documentation": "Socket.create(Socket.AF_INET, Socket.SOCK_STREAM);"
+					"detail": "Create a new socket with a given family and type. Returns a Result type.",
+					"documentation": "var socket = Socket.create(Socket.AF_INET, Socket.SOCK_STREAM);"
 				}
+			],
+			"constants": [
+				{"name": "AF_INET", "detail": "IPv4 address family"},
+				{"name": "SOCK_STREAM", "detail": "TCP socket type"},
+				{"name": "SOCK_DGRAM", "detail": "UDP socket type"},
+				{"name": "SOCK_RAW", "detail": "Raw socket type"},
+				{"name": "SOCK_SEQPACKET", "detail": "Sequenced packet socket type"},
+				{"name": "SOL_SOCKET", "detail": "Socket level option"},
+				{"name": "SO_REUSEADDR", "detail": "Allow address reuse"},
+				{"name": "SO_BROADCAST", "detail": "Allow broadcast"}
 			]
 		},
 		{
 			"name": "Random",
-			"detail": "Module containing different methods that deal with random numbers and selections. Note: NOT cryptographically secure.",
-			"documentation": "",
+			"detail": "Module for random number generation. NOT cryptographically secure.",
+			"documentation": "import Random;",
 			"methods": [
 				{
 					"name": "random",
 					"detail": "Return a random decimal between 0 and 1.",
-					"documentation": "Random.random();"
+					"documentation": "Random.random(); // 0.523..."
 				},
 				{
 					"name": "range",
-					"detail": "Returns a random integer between the lowest and highest inputs (both inclusive).",
-					"documentation": "Random.range(1, 3);"
+					"detail": "Return a random integer between low and high (both inclusive).",
+					"documentation": "Random.range(1, 10); // 7"
 				},
 				{
 					"name": "select",
-					"detail": "Returns a value randomly selected from the list.",
-					"documentation": "Random.select([1, 2, 3]);"
+					"detail": "Return a randomly selected value from a list.",
+					"documentation": "Random.select([1, 2, 3]); // 2"
 				}
 			]
 		},
 		{
 			"name": "Base64",
-			"detail": "Module containing different methods that deal with base64 encoding and decoding.",
-			"documentation": "",
+			"detail": "Module for Base64 encoding and decoding",
+			"documentation": "import Base64;",
 			"methods": [
 				{
 					"name": "encode",
-					"detail": "Base64 encode a given string.",
-					"documentation": "Base64.encode('test');"
+					"detail": "Base64 encode a string.",
+					"documentation": "Base64.encode('test'); // 'dGVzdA=='"
 				},
 				{
 					"name": "decode",
-					"detail": "Base64 decode a given string.",
-					"documentation": "Base64.decode('dGVzdA==');"
+					"detail": "Base64 decode a string.",
+					"documentation": "Base64.decode('dGVzdA=='); // 'test'"
 				}
 			]
 		},
 		{
 			"name": "Hashlib",
-			"detail": "Module containing different methods that deal with different hashing algorithms.",
-			"documentation": "",
+			"detail": "Module for hashing algorithms",
+			"documentation": "import Hashlib;",
 			"methods": [
 				{
 					"name": "sha256",
-					"detail": "Hashes a given string using the SHA-256 algorithm.",
+					"detail": "Hash a string using SHA-256.",
 					"documentation": "Hashlib.sha256('Dictu');"
 				},
 				{
 					"name": "hmac",
-					"detail": "Generate a HMAC using the SHA-256 algorithm. The raw optional argument determines whether the output will be in raw bytes or whether it will be in a string format, default is string format (false).",
-					"documentation": "Hashlib.hmac('supersecretkey', 'my message');"
+					"detail": "Generate HMAC using SHA-256. Optional raw bytes output.",
+					"documentation": "Hashlib.hmac('secretkey', 'payload');\nHashlib.hmac('secretkey', 'payload', true); // raw"
 				},
 				{
 					"name": "bcrypt",
-					"detail": "Hashes a given string using the bcrypt algorithm. The rounds optional argument is the amount of rounds used to generate the hashed string, default is 8.",
-					"documentation": "Hashlib.bcrypt('my message');"
+					"detail": "Hash a string using bcrypt. Optional rounds (default 8).",
+					"documentation": "Hashlib.bcrypt('password');\nHashlib.bcrypt('password', 12);"
 				},
 				{
 					"name": "bcryptVerify",
-					"detail": "This verifies a given bcrypt hash matches the plaintext input with a boolean return value. The comparison method used is timing safe.",
-					"documentation": "Hashlib.bcryptVerify('my message', '$2b$08$mkI2fcaukY0XX3qlpdtBgeXq7pAUr2bUw4Z1OkmncuibJ0aHAyLRS');"
+					"detail": "Verify a bcrypt hash matches plaintext. Timing-safe comparison.",
+					"documentation": "Hashlib.bcryptVerify('password', hash); // true/false"
 				},
 				{
 					"name": "verify",
-					"detail": "Hashes a given string using the bcrypt algorithm. The rounds optional argument is the amount of rounds used to generate the hashed string, default is 8.Timing safe hash comparison. This should always be favoured over normal string comparison.",
-					"documentation": "Hashlib.verify(Hashlib.sha256('Dictu'), 'wrong');"
+					"detail": "Timing-safe hash comparison. Always prefer over normal string comparison.",
+					"documentation": "Hashlib.verify(Hashlib.sha256('a'), Hashlib.sha256('b'));"
 				}
 			]
 		},
 		{
 			"name": "Process",
-			"detail": "Module containing different methods that deal with processes.",
-			"documentation": "",
+			"detail": "Module for executing external processes",
+			"documentation": "import Process;",
 			"methods": [
 				{
 					"name": "exec",
-					"detail": "Executing an external process can be done via .exec. Unlike .run() exec does not wait for the process to finish executing, so it is only useful for circumstances where you wish to “fire and forget”.\n\n.exec() expects a list as a parameter which is the command and any arguments for the command as individual list elements, which all must be strings. It will return a Result that unwraps to nil on success.",
+					"detail": "Execute a process without waiting (fire and forget). Returns a Result type.",
 					"documentation": "Process.exec(['ls', '-la']);"
 				},
 				{
 					"name": "run",
-					"detail": "Similar to .run() except this will wait for the external process to finish executing.\n\n.run() expects a list as a parameter which is the command and any arguments for the command as individual list elements, and it will return a Result that unwraps to nil on success.\n\nIf the external process writes to stdout and you wish to capture the output you can pass an optional boolean argument to .run(), this will instead make the Result unwrap to a string of the captured output.",
-					"documentation": "Process.run(['ls', '-la'])"
+					"detail": "Execute a process and wait for completion. Optional output capture. Returns a Result type.",
+					"documentation": "Process.run(['ls', '-la']);\nProcess.run(['ls', '-la'], true).unwrap(); // Captured output"
+				},
+				{
+					"name": "kill",
+					"detail": "Send a signal to a process by PID. Optional signal number.",
+					"documentation": "Process.kill(1234);\nProcess.kill(1234, 9); // SIGKILL"
 				}
 			]
 		},
 		{
 			"name": "Term",
-			"detail": "Module containing different methods that deal with terminals.",
-			"documentation": "",
+			"detail": "Module for terminal operations",
+			"documentation": "import Term;",
 			"methods": [
 				{
 					"name": "isatty",
-					"detail": "Returns a boolean indicating whether the file descriptor passed is attached to a tty.",
-					"documentation": "Term.isatty(0);"
+					"detail": "Returns boolean if the file descriptor is attached to a tty.",
+					"documentation": "Term.isatty(0); // stdin"
 				},
 				{
 					"name": "getSize",
-					"detail": "Returns the number of rows, columns, horizontal and vertical pixels of the attached terminal.",
-					"documentation": "Term.getSize()"
+					"detail": "Returns [rows, columns, hPixels, vPixels] of the attached terminal.",
+					"documentation": "Term.getSize(); // [24, 80, 0, 0]"
 				}
 			]
 		},
 		{
 			"name": "Sqlite",
-			"detail": "Module containing different methods that deal with SQLite.",
-			"documentation": "",
+			"detail": "Module for SQLite database operations",
+			"documentation": "import Sqlite;",
 			"methods": [
 				{
 					"name": "connect",
-					"detail": "This opens a connection to a SQLite database. Returns a Result type and on success wraps an abstract SQLite type.\n\nNote: You can pass “:memory:” to open the SQLite database in memory rather than a file.",
-					"documentation": "Sqlite.connect('my/database/file.db');"
+					"detail": "Open a connection to a SQLite database. Use ':memory:' for in-memory DB. Returns a Result type.",
+					"documentation": "var db = Sqlite.connect('my.db').unwrap();\nvar db = Sqlite.connect(':memory:').unwrap();\ndb.execute('CREATE TABLE ...');\ndb.close();"
 				}
+			]
+		},
+		{
+			"name": "IO",
+			"detail": "Module for I/O operations",
+			"documentation": "import IO;",
+			"methods": [
+				{
+					"name": "print",
+					"detail": "Print to stdout without a newline.",
+					"documentation": "IO.print('hello');"
+				},
+				{
+					"name": "println",
+					"detail": "Print to stdout with a newline.",
+					"documentation": "IO.println('hello');"
+				},
+				{
+					"name": "eprint",
+					"detail": "Print to stderr without a newline.",
+					"documentation": "IO.eprint('error');"
+				},
+				{
+					"name": "eprintln",
+					"detail": "Print to stderr with a newline.",
+					"documentation": "IO.eprintln('error');"
+				},
+				{
+					"name": "copyFile",
+					"detail": "Copy a file from source to destination.",
+					"documentation": "IO.copyFile('source.txt', 'dest.txt');"
+				}
+			],
+			"constants": [
+				{"name": "devNull", "detail": "Path to /dev/null or equivalent"}
+			]
+		},
+		{
+			"name": "Buffer",
+			"detail": "Module for byte buffer operations",
+			"documentation": "import Buffer;",
+			"methods": [
+				{
+					"name": "new",
+					"detail": "Create a new buffer of a given size.",
+					"documentation": "var buf = Buffer.new(1024);"
+				},
+				{
+					"name": "fromString",
+					"detail": "Create a new buffer from a string.",
+					"documentation": "var buf = Buffer.fromString('hello');"
+				}
+			]
+		},
+		{
+			"name": "Queue",
+			"detail": "Module for FIFO queue data structure",
+			"documentation": "import Queue;",
+			"methods": [
+				{
+					"name": "new",
+					"detail": "Create a new unbounded queue.",
+					"documentation": "var q = Queue.new();\nq.push('item');\nq.pop(); // 'item'"
+				},
+				{
+					"name": "newWithSize",
+					"detail": "Create a new bounded queue with maximum size.",
+					"documentation": "var q = Queue.newWithSize(100);"
+				}
+			]
+		},
+		{
+			"name": "Stack",
+			"detail": "Module for LIFO stack data structure",
+			"documentation": "import Stack;",
+			"methods": [
+				{
+					"name": "new",
+					"detail": "Create a new unbounded stack.",
+					"documentation": "var s = Stack.new();\ns.push('item');\ns.pop(); // 'item'"
+				},
+				{
+					"name": "newWithSize",
+					"detail": "Create a new bounded stack with maximum size.",
+					"documentation": "var s = Stack.newWithSize(100);"
+				}
+			]
+		},
+		{
+			"name": "BigInt",
+			"detail": "Module for arbitrary-precision integer arithmetic",
+			"documentation": "import BigInt;",
+			"methods": [
+				{
+					"name": "new",
+					"detail": "Create a new BigInt from a number or string.",
+					"documentation": "var big = BigInt.new(12345);\nvar big = BigInt.new('99999999999999999999');"
+				}
+			]
+		},
+		{
+			"name": "Log",
+			"detail": "Module for logging operations",
+			"documentation": "import Log;",
+			"methods": [
+				{
+					"name": "print",
+					"detail": "Print a log message without newline.",
+					"documentation": "Log.print('message');"
+				},
+				{
+					"name": "println",
+					"detail": "Print a log message with newline.",
+					"documentation": "Log.println('message');"
+				},
+				{
+					"name": "fatal",
+					"detail": "Print a fatal message and exit.",
+					"documentation": "Log.fatal('critical error');"
+				},
+				{
+					"name": "fatalln",
+					"detail": "Print a fatal message with newline and exit.",
+					"documentation": "Log.fatalln('critical error');"
+				},
+				{
+					"name": "new",
+					"detail": "Create a new logger with given file descriptor.",
+					"documentation": "var logger = Log.new(Log.stderr);\nlogger.setPrefix('[MyApp] ');\nlogger.println('started');"
+				}
+			],
+			"constants": [
+				{"name": "stdout", "detail": "Standard output file descriptor"},
+				{"name": "stderr", "detail": "Standard error file descriptor"},
+				{"name": "stdin", "detail": "Standard input file descriptor"}
+			]
+		},
+		{
+			"name": "Net",
+			"detail": "Module for network operations",
+			"documentation": "import Net;",
+			"methods": [
+				{
+					"name": "parseIp4",
+					"detail": "Parse an IPv4 address string into a list of octets.",
+					"documentation": "Net.parseIp4('192.168.1.1'); // [192, 168, 1, 1]"
+				}
+			]
+		},
+		{
+			"name": "Object",
+			"detail": "Module for runtime object introspection",
+			"documentation": "import Object;",
+			"methods": [
+				{
+					"name": "getClassRef",
+					"detail": "Get a reference to a class by name string.",
+					"documentation": "var ref = Object.getClassRef('MyClass');"
+				},
+				{
+					"name": "createFrom",
+					"detail": "Create a new instance from a class name string.",
+					"documentation": "var obj = Object.createFrom('MyClass');"
+				},
+				{
+					"name": "hash",
+					"detail": "Get the hash value of a value.",
+					"documentation": "Object.hash('test');"
+				},
+				{
+					"name": "prettyPrint",
+					"detail": "Pretty-print a value with optional indentation.",
+					"documentation": "Object.prettyPrint({'key': [1, 2]}, 4);"
+				}
+			]
+		},
+		{
+			"name": "Inspect",
+			"detail": "Module for runtime inspection of the call stack",
+			"documentation": "import Inspect;",
+			"methods": [
+				{
+					"name": "getFrameCount",
+					"detail": "Get the current call stack frame count.",
+					"documentation": "Inspect.getFrameCount();"
+				},
+				{
+					"name": "getLine",
+					"detail": "Get the line number at a given frame depth (default: current).",
+					"documentation": "Inspect.getLine();\nInspect.getLine(2);"
+				},
+				{
+					"name": "getFile",
+					"detail": "Get the file name at a given frame depth (default: current).",
+					"documentation": "Inspect.getFile();\nInspect.getFile(2);"
+				}
+			]
+		},
+		{
+			"name": "UUID",
+			"detail": "Module for generating UUIDs",
+			"documentation": "import UUID;",
+			"methods": [
+				{
+					"name": "generate",
+					"detail": "Generate a new UUID v4.",
+					"documentation": "UUID.generate(); // 'xxxxxxxx-xxxx-4xxx-...'"
+				},
+				{
+					"name": "generateRandom",
+					"detail": "Generate a new random UUID.",
+					"documentation": "UUID.generateRandom();"
+				},
+				{
+					"name": "generateTime",
+					"detail": "Generate a new time-based UUID.",
+					"documentation": "UUID.generateTime();"
+				}
+			]
+		},
+		{
+			"name": "Argparse",
+			"detail": "Module for command-line argument parsing",
+			"documentation": "import Argparse;",
+			"methods": [
+				{
+					"name": "Parser",
+					"detail": "Create a new argument parser with name, description, and optional usage.",
+					"documentation": "var parser = Argparse.Parser('myapp', 'My application');\nparser.addString('name', 'Your name', true);\nparser.addNumber('count', 'Item count');\nparser.addBool('verbose', 'Verbose output');\nparser.addList('files', 'Input files');\nvar args = parser.parse().unwrap();"
+				}
+			]
+		},
+		{
+			"name": "UnitTest",
+			"detail": "Module for unit testing",
+			"documentation": "import UnitTest;",
+			"methods": []
+		},
+		{
+			"name": "FFI",
+			"detail": "Module for loading native shared libraries",
+			"documentation": "import FFI;",
+			"methods": [
+				{
+					"name": "load",
+					"detail": "Load a shared library implementing dictu_ffi_init.",
+					"documentation": "FFI.load('mylib' + FFI.suffix);"
+				}
+			],
+			"constants": [
+				{"name": "suffix", "detail": "Platform shared library suffix (.dll, .so, or .dylib)"}
 			]
 		}
 	],
 	"builtins": [
 		{
 			"name": "print",
-			"detail": "Prints given values to the stdout",
-			"documentation": "print(10, 'test', nil, true); // 10, 'test', nil, true"
+			"detail": "Print values to stdout, separated by commas.",
+			"documentation": "print(10, 'test', nil, true);\n// 10, test, nil, true"
 		},
 		{
 			"name": "printError",
-			"detail": "Prints a given list of values to stderr",
-			"documentation": "printError(10, 'test', nil, true); // 10, 'test', nil, true"
+			"detail": "Print values to stderr.",
+			"documentation": "printError('something went wrong');"
 		},
 		{
 			"name": "input",
-			"detail": "Retrieves input from stdin and returns value as a string",
-			"documentation": "input('Please enter your choice: '); // Optional prompt"
+			"detail": "Read a line from stdin. Optional prompt string.",
+			"documentation": "var name = input('Enter name: ');\nvar line = input();"
 		},
 		{
 			"name": "type",
-			"detail": "Returns the type of a given value as a string.",
-			"documentation": "type(10); // 'number'"
+			"detail": "Returns the type of a value as a string.",
+			"documentation": "type(10);       // 'number'\ntype('hello');  // 'string'\ntype([1, 2]);   // 'list'\ntype({});       // 'dict'\ntype(nil);      // 'nil'\ntype(true);     // 'bool'"
 		},
 		{
 			"name": "assert",
-			"detail": "Raise a runtime error if the given expression is not truthy.",
-			"documentation": "assert(10 > 9);"
+			"detail": "Raise a runtime error if the expression is not truthy.",
+			"documentation": "assert(10 > 9);\nassert(x != nil);"
 		},
 		{
 			"name": "isDefined",
-			"detail": "Returns a boolean depending on whether a variable has been defined in the global scope.",
-			"documentation": "isDefined('isDefined');"
+			"detail": "Returns boolean indicating if a variable is defined in the global scope.",
+			"documentation": "isDefined('myVar'); // true/false"
+		},
+		{
+			"name": "set",
+			"detail": "Create a new set from given values.",
+			"documentation": "var s = set();\nvar s = set('a', 'b', 'c');\nvar s = set(1, 2, 3);"
+		},
+		{
+			"name": "Success",
+			"detail": "Create a Success Result wrapping a value.",
+			"documentation": "var result = Success('data');\nresult.unwrap(); // 'data'"
+		},
+		{
+			"name": "Error",
+			"detail": "Create an Error Result with a message.",
+			"documentation": "var result = Error('something failed');\nresult.unwrapError(); // 'something failed'"
 		}
 	],
 	"keywords": [
-		"class",
 		"abstract",
-		"trait",
-		"use",
-		"static",
-		"public",
-		"enum",
-		"this",
-		"super",
-		"def",
-		"as",
-		"if",
 		"and",
-		"else",
-		"or",
-		"var",
-		"const",
-		"true",
-		"false",
-		"nil",
-		"for",
-		"while",
+		"as",
 		"break",
-		"return",
+		"case",
+		"class",
+		"const",
 		"continue",
-		"with",
+		"def",
+		"default",
+		"else",
+		"enum",
+		"false",
+		"for",
+		"from",
+		"if",
 		"import",
-		"from"
+		"nil",
+		"not",
+		"or",
+		"private",
+		"return",
+		"static",
+		"super",
+		"switch",
+		"this",
+		"trait",
+		"true",
+		"use",
+		"var",
+		"while",
+		"with"
 	],
+	"typeMethods": {
+		"string": [
+			{"name": "len", "detail": "Returns the length of the string.", "documentation": "'hello'.len(); // 5"},
+			{"name": "lower", "detail": "Convert the string to lowercase.", "documentation": "'HELLO'.lower(); // 'hello'"},
+			{"name": "upper", "detail": "Convert the string to uppercase.", "documentation": "'hello'.upper(); // 'HELLO'"},
+			{"name": "toNumber", "detail": "Cast to number. Returns a Result type.", "documentation": "'100'.toNumber().unwrap(); // 100"},
+			{"name": "toBool", "detail": "Cast to boolean. Empty string is false.", "documentation": "'hello'.toBool(); // true"},
+			{"name": "startsWith", "detail": "Check if string starts with the given prefix.", "documentation": "'hello'.startsWith('he'); // true"},
+			{"name": "endsWith", "detail": "Check if string ends with the given suffix.", "documentation": "'hello'.endsWith('lo'); // true"},
+			{"name": "split", "detail": "Split string by delimiter. Optional max count.", "documentation": "'a,b,c'.split(','); // ['a', 'b', 'c']\n'a,b,c'.split(',', 2); // ['a', 'b,c']"},
+			{"name": "replace", "detail": "Replace all occurrences of a substring.", "documentation": "'hello'.replace('l', 'r'); // 'herro'"},
+			{"name": "contains", "detail": "Check if string contains a substring.", "documentation": "'hello'.contains('ell'); // true"},
+			{"name": "find", "detail": "Find index of first occurrence. Optional skip count. Returns -1 if not found.", "documentation": "'hello'.find('l'); // 2\n'hello'.find('l', 1); // 3"},
+			{"name": "findLast", "detail": "Find index of last occurrence. Returns -1 if not found.", "documentation": "'hello'.findLast('l'); // 3"},
+			{"name": "leftStrip", "detail": "Remove leading whitespace.", "documentation": "'  hello  '.leftStrip(); // 'hello  '"},
+			{"name": "rightStrip", "detail": "Remove trailing whitespace.", "documentation": "'  hello  '.rightStrip(); // '  hello'"},
+			{"name": "strip", "detail": "Remove leading and trailing whitespace.", "documentation": "'  hello  '.strip(); // 'hello'"},
+			{"name": "format", "detail": "Replace {} placeholders with arguments.", "documentation": "'{} is {}'.format('Dictu', 'great');\n// 'Dictu is great'"},
+			{"name": "count", "detail": "Count occurrences of a substring.", "documentation": "'hello'.count('l'); // 2"},
+			{"name": "title", "detail": "Capitalize the first letter of each word.", "documentation": "'hello world'.title(); // 'Hello World'"},
+			{"name": "repeat", "detail": "Repeat the string n times.", "documentation": "'ab'.repeat(3); // 'ababab'"},
+			{"name": "isUpper", "detail": "Check if all characters are uppercase.", "documentation": "'HELLO'.isUpper(); // true"},
+			{"name": "isLower", "detail": "Check if all characters are lowercase.", "documentation": "'hello'.isLower(); // true"},
+			{"name": "wordCount", "detail": "Count the number of words.", "documentation": "'hello world'.wordCount(); // 2"},
+			{"name": "collapseSpaces", "detail": "Collapse multiple spaces into single spaces.", "documentation": "'hello   world'.collapseSpaces(); // 'hello world'"},
+			{"name": "wrap", "detail": "Insert newlines at specified character width.", "documentation": "'long text here'.wrap(5);"}
+		],
+		"list": [
+			{"name": "push", "detail": "Append a value to the end of the list.", "documentation": "var list = [1, 2];\nlist.push(3); // [1, 2, 3]"},
+			{"name": "insert", "detail": "Insert a value at a given index.", "documentation": "var list = [1, 3];\nlist.insert(2, 1); // [1, 2, 3]"},
+			{"name": "extend", "detail": "Add all elements from another list.", "documentation": "[1, 2].extend([3, 4]); // [1, 2, 3, 4]"},
+			{"name": "pop", "detail": "Remove and return element at index (default: last).", "documentation": "var list = [1, 2, 3];\nlist.pop(); // 3\nlist.pop(0); // 1"},
+			{"name": "remove", "detail": "Remove the first occurrence of a value.", "documentation": "[1, 2, 3, 2].remove(2); // [1, 3, 2]"},
+			{"name": "len", "detail": "Returns the number of elements.", "documentation": "[1, 2, 3].len(); // 3"},
+			{"name": "contains", "detail": "Check if the list contains a value.", "documentation": "[1, 2, 3].contains(2); // true"},
+			{"name": "join", "detail": "Join all elements with a delimiter string.", "documentation": "['a', 'b', 'c'].join(', '); // 'a, b, c'"},
+			{"name": "reverse", "detail": "Reverse the list in-place.", "documentation": "var list = [1, 2, 3];\nlist.reverse(); // [3, 2, 1]"},
+			{"name": "sort", "detail": "Sort the list in-place (numbers or strings only).", "documentation": "var list = [3, 1, 2];\nlist.sort(); // [1, 2, 3]"},
+			{"name": "sortFunc", "detail": "Sort in-place with a custom comparator function.", "documentation": "list.sortFunc(def (a, b) => a > b);"},
+			{"name": "unique", "detail": "Remove duplicate elements.", "documentation": "[1, 2, 2, 3].unique(); // [1, 2, 3]"},
+			{"name": "copy", "detail": "Create a shallow copy of the list.", "documentation": "var copy = list.copy();"},
+			{"name": "deepCopy", "detail": "Create a deep copy of the list.", "documentation": "var copy = list.deepCopy();"},
+			{"name": "toString", "detail": "Return a string representation.", "documentation": "[1, 2, 3].toString(); // '[1, 2, 3]'"},
+			{"name": "toBool", "detail": "Returns true if list has elements.", "documentation": "[].toBool(); // false\n[1].toBool(); // true"},
+			{"name": "forEach", "detail": "Execute a function for each element.", "documentation": "[1, 2, 3].forEach(def (item) => {\n    print(item);\n});"},
+			{"name": "map", "detail": "Return a new list by applying a function to each element.", "documentation": "[1, 2, 3].map(def (x) => x * 2);\n// [2, 4, 6]"},
+			{"name": "filter", "detail": "Return a new list of elements matching the predicate.", "documentation": "[1, 2, 3, 4].filter(def (x) => x > 2);\n// [3, 4]"},
+			{"name": "reduce", "detail": "Reduce the list to a single value with an accumulator.", "documentation": "[1, 2, 3].reduce(def (acc, x) => acc + x, 0);\n// 6"},
+			{"name": "find", "detail": "Return first element matching the predicate, or nil.", "documentation": "[1, 2, 3].find(def (x) => x > 1); // 2"},
+			{"name": "findIndex", "detail": "Return index of first element matching predicate, or nil.", "documentation": "[1, 2, 3].findIndex(def (x) => x > 1); // 1"},
+			{"name": "splice", "detail": "Remove/insert elements at position. splice(start, deleteCount, items?).", "documentation": "var list = [1, 2, 3, 4, 5];\nlist.splice(1, 2); // Removes 2 items at index 1\nlist.splice(1, 0, [10, 11]); // Insert at index 1"}
+		],
+		"dict": [
+			{"name": "get", "detail": "Get a value by key with optional default.", "documentation": "var d = {'key': 'value'};\nd.get('key'); // 'value'\nd.get('missing', 'default'); // 'default'"},
+			{"name": "keys", "detail": "Return a list of all keys.", "documentation": "{'a': 1, 'b': 2}.keys(); // ['a', 'b']"},
+			{"name": "exists", "detail": "Check if a key exists in the dictionary.", "documentation": "{'a': 1}.exists('a'); // true"},
+			{"name": "remove", "detail": "Remove a key-value pair by key.", "documentation": "var d = {'a': 1, 'b': 2};\nd.remove('a'); // {'b': 2}"},
+			{"name": "len", "detail": "Return the number of entries.", "documentation": "{'a': 1, 'b': 2}.len(); // 2"},
+			{"name": "copy", "detail": "Create a shallow copy.", "documentation": "var copy = dict.copy();"},
+			{"name": "deepCopy", "detail": "Create a deep copy.", "documentation": "var copy = dict.deepCopy();"},
+			{"name": "forEach", "detail": "Execute a function on each key-value pair.", "documentation": "{'a': 1}.forEach(def (key, value) => {\n    print('{}: {}'.format(key, value));\n});"},
+			{"name": "merge", "detail": "Merge another dictionary into this one. Existing keys are overwritten.", "documentation": "var d = {'a': 1};\nd.merge({'b': 2}); // {'a': 1, 'b': 2}"},
+			{"name": "toString", "detail": "Return a string representation.", "documentation": "{'a': 1}.toString();"},
+			{"name": "toBool", "detail": "Returns true if dict has entries.", "documentation": "{}.toBool(); // false"},
+			{"name": "toObj", "detail": "Convert dictionary to a class instance.", "documentation": "var obj = dict.toObj(MyClass);"}
+		],
+		"set": [
+			{"name": "add", "detail": "Add a value to the set.", "documentation": "var s = set();\ns.add('value');"},
+			{"name": "remove", "detail": "Remove a value from the set.", "documentation": "s.remove('value');"},
+			{"name": "contains", "detail": "Check if the set contains a value.", "documentation": "s.contains('value'); // true"},
+			{"name": "containsAll", "detail": "Check if the set contains all values in a list.", "documentation": "s.containsAll(['a', 'b']); // true"},
+			{"name": "values", "detail": "Return a list of all values in the set.", "documentation": "s.values(); // ['a', 'b', 'c']"},
+			{"name": "len", "detail": "Return the number of elements.", "documentation": "s.len(); // 3"},
+			{"name": "toString", "detail": "Return a string representation.", "documentation": "s.toString();"},
+			{"name": "toBool", "detail": "Returns true if set has elements.", "documentation": "s.toBool();"}
+		],
+		"result": [
+			{"name": "unwrap", "detail": "Extract the value from a Success result. Runtime error if Error.", "documentation": "var val = result.unwrap();"},
+			{"name": "unwrapError", "detail": "Get the error message from an Error result. Runtime error if Success.", "documentation": "var msg = result.unwrapError();"},
+			{"name": "success", "detail": "Returns true if result is Success, false if Error.", "documentation": "if (result.success()) {\n    print(result.unwrap());\n}"},
+			{"name": "match", "detail": "Pattern match on result with success and error callbacks.", "documentation": "result.match(\n    def (value) => print('Got: ' + value),\n    def (error) => print('Error: ' + error)\n);"},
+			{"name": "matchWrap", "detail": "Match and re-wrap the return value in a new Result.", "documentation": "var newResult = result.matchWrap(\n    def (value) => value * 2,\n    def (error) => error\n);"},
+			{"name": "matchError", "detail": "Handle only the error case, pass through success.", "documentation": "result.matchError(def (error) => print(error));"}
+		],
+		"number": [
+			{"name": "toString", "detail": "Convert number to string.", "documentation": "(100).toString(); // '100'"},
+			{"name": "toBool", "detail": "Convert number to boolean. 0 is false.", "documentation": "(0).toBool(); // false\n(1).toBool(); // true"}
+		],
+		"file": [
+			{"name": "read", "detail": "Read the entire file contents as a string.", "documentation": "with('file.txt', 'r') {\n    var content = file.read();\n}"},
+			{"name": "readLine", "detail": "Read a single line from the file. Optional buffer size.", "documentation": "with('file.txt', 'r') {\n    var line = file.readLine();\n}"},
+			{"name": "write", "detail": "Write a string to the file.", "documentation": "with('file.txt', 'w') {\n    file.write('hello');\n}"},
+			{"name": "writeLine", "detail": "Write a string followed by a newline.", "documentation": "with('file.txt', 'w') {\n    file.writeLine('hello');\n}"},
+			{"name": "seek", "detail": "Seek to a position in the file. seek(offset, whence).", "documentation": "file.seek(0, 0); // Seek to beginning"}
+		],
+		"class": [
+			{"name": "toString", "detail": "Return a string representation of the instance. Override in your class.", "documentation": "class Foo {\n    toString() {\n        return 'Foo instance';\n    }\n}"},
+			{"name": "toDict", "detail": "Convert the instance to a dictionary.", "documentation": "var d = obj.toDict();"},
+			{"name": "methods", "detail": "Return a list of public method names.", "documentation": "obj.methods(); // ['method1', 'method2']"},
+			{"name": "getAttribute", "detail": "Get an attribute by name at runtime.", "documentation": "obj.getAttribute('name');"},
+			{"name": "setAttribute", "detail": "Set an attribute by name at runtime.", "documentation": "obj.setAttribute('name', 'value');"},
+			{"name": "hasAttribute", "detail": "Check if the instance has an attribute.", "documentation": "obj.hasAttribute('name'); // true"},
+			{"name": "copy", "detail": "Create a shallow copy of the instance.", "documentation": "var copy = obj.copy();"},
+			{"name": "deepCopy", "detail": "Create a deep copy of the instance.", "documentation": "var copy = obj.deepCopy();"},
+			{"name": "isInstance", "detail": "Check if the instance is of a given class (including inheritance).", "documentation": "obj.isInstance(MyClass); // true"},
+			{"name": "classAnnotations", "detail": "Get class-level annotations.", "documentation": "MyClass.classAnnotations;"},
+			{"name": "methodAnnotations", "detail": "Get method-level annotations.", "documentation": "MyClass.methodAnnotations;"},
+			{"name": "fieldAnnotations", "detail": "Get field-level annotations.", "documentation": "MyClass.fieldAnnotations;"}
+		]
+	},
 	"snippets": {
 		"for": {
-			"detail": "For loop skeleton",
-			"content": "for (var i = 0; i < $0; i += 1) {\n\t\n}"
+			"detail": "For loop",
+			"content": "for (var ${1:i} = 0; ${1:i} < ${2:count}; ${1:i} += 1) {\n\t$0\n}"
+		},
+		"while": {
+			"detail": "While loop",
+			"content": "while (${1:condition}) {\n\t$0\n}"
+		},
+		"while true": {
+			"detail": "Infinite while loop",
+			"content": "while {\n\t$0\n}"
 		},
 		"def": {
-			"detail": "Function skeleton",
-			"content": "def $0() {\n\n}"
+			"detail": "Function definition",
+			"content": "def ${1:name}(${2:params}) {\n\t$0\n}"
 		},
 		"def arrow": {
-			"detail": "Arrow function skeleton",
-			"content": "def () => $0"
+			"detail": "Arrow function",
+			"content": "def (${1:params}) => $0"
 		},
 		"class": {
-			"detail": "Class skeleton",
-			"content": "class $0 {\n\tinit() {\n\t\t\n\t}\n}"
+			"detail": "Class definition",
+			"content": "class ${1:Name} {\n\tinit(${2:}) {\n\t\t$0\n\t}\n}"
+		},
+		"class extends": {
+			"detail": "Class with inheritance",
+			"content": "class ${1:Name} < ${2:Parent} {\n\tinit(${3:}) {\n\t\tsuper.init($3);\n\t\t$0\n\t}\n}"
 		},
 		"abstract class": {
-			"detail": "Abstract class skeleton",
-			"content": "abstract class $0 {\n\t\n}"
+			"detail": "Abstract class definition",
+			"content": "abstract class ${1:Name} {\n\tabstract ${2:method}();\n\t$0\n}"
+		},
+		"trait": {
+			"detail": "Trait definition",
+			"content": "trait ${1:Name} {\n\t${2:method}() {\n\t\t$0\n\t}\n}"
+		},
+		"enum": {
+			"detail": "Enum definition",
+			"content": "enum ${1:Name} {\n\t${2:Value1},\n\t${3:Value2},\n\t$0\n}"
 		},
 		"match": {
-			"detail": "Match call for error handling",
-			"content": "match(\n\tdef(result) => result,\n\tdef(error) => error);"
+			"detail": "Result match for error handling",
+			"content": ".match(\n\tdef (${1:result}) => $1,\n\tdef (${2:error}) => $2\n);"
+		},
+		"if": {
+			"detail": "If statement",
+			"content": "if (${1:condition}) {\n\t$0\n}"
+		},
+		"if else": {
+			"detail": "If-else statement",
+			"content": "if (${1:condition}) {\n\t$2\n} else {\n\t$0\n}"
+		},
+		"switch": {
+			"detail": "Switch statement",
+			"content": "switch (${1:value}) {\n\tcase ${2:val}: {\n\t\t$3\n\t}\n\n\tdefault: {\n\t\t$0\n\t}\n}"
+		},
+		"with": {
+			"detail": "File with statement",
+			"content": "with(${1:'file.txt'}, ${2:'r'}) {\n\t$0\n}"
+		},
+		"import": {
+			"detail": "Import module",
+			"content": "import ${1:Module};"
+		},
+		"from import": {
+			"detail": "Selective import",
+			"content": "from ${1:Module} import ${2:name};"
 		}
 	}
 }
