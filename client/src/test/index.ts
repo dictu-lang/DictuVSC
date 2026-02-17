@@ -3,11 +3,10 @@
  * Licensed under the MIT License. See License.txt in the project root for license information.
  * ------------------------------------------------------------------------------------------ */
 import * as path from 'path';
-import * as Mocha from 'mocha';
-import * as glob from 'glob';
+import Mocha from 'mocha';
+import { glob } from 'glob';
 
-export function run(): Promise<void> {
-	// Create the mocha test
+export async function run(): Promise<void> {
 	const mocha = new Mocha({
 		ui: 'tdd',
 		color: true
@@ -15,29 +14,22 @@ export function run(): Promise<void> {
 	mocha.timeout(100000);
 
 	const testsRoot = __dirname;
+	const files = await glob('**.test.js', { cwd: testsRoot });
 
-	return new Promise((resolve, reject) => {
-		glob('**.test.js', { cwd: testsRoot }, (err, files) => {
-			if (err) {
-				return reject(err);
-			}
+	files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
 
-			// Add files to the test suite
-			files.forEach(f => mocha.addFile(path.resolve(testsRoot, f)));
-
-			try {
-				// Run the mocha test
-				mocha.run(failures => {
-					if (failures > 0) {
-						reject(new Error(`${failures} tests failed.`));
-					} else {
-						resolve();
-					}
-				});
-			} catch (err) {
-				console.error(err);
-				reject(err);
-			}
-		});
+	return new Promise<void>((resolve, reject) => {
+		try {
+			mocha.run(failures => {
+				if (failures > 0) {
+					reject(new Error(`${failures} tests failed.`));
+				} else {
+					resolve();
+				}
+			});
+		} catch (err) {
+			console.error(err);
+			reject(err);
+		}
 	});
 }

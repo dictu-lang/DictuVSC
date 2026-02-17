@@ -9,13 +9,11 @@
 		"url": "https://github.com/dictu-lang/DictuVSC"
 	},
 	"engines": {
-		"vscode": "^1.52.0"
-	},
-	"dependencies": {
-		"vscode-languageclient": "^7.0.0"
+		"vscode": "^1.75.0"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.52.0",
-		"vscode-test": "^1.3.0"
+		"vscode-languageclient": "^9.0.0",
+		"@types/vscode": "^1.75.0",
+		"@vscode/test-electron": "^2.4.0"
 	}
 }
