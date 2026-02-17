@@ -49,12 +49,9 @@
 			"patterns": [
 				{
 					"name": "meta.annotation.dictu",
-					"match": "(@)([A-Za-z_][A-Za-z0-9_]*)",
+					"match": "(@[A-Za-z_][A-Za-z0-9_]*)",
 					"captures": {
 						"1": {
-							"name": "punctuation.definition.annotation.dictu"
-						},
-						"2": {
 							"name": "entity.name.function.annotation.dictu"
 						}
 					}
